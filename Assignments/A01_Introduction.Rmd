@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Sena McCrory"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -22,7 +22,7 @@ The completed exercise is due on Tuesday, January 14th at 1:00 pm.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: Completed ENV 710 statistics course in R last semester which included basic statistical analysis and some linear modeling
 
 2. Are there any components of the course about which you feel confident?
 
