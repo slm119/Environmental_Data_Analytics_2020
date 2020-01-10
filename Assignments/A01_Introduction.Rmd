@@ -22,21 +22,21 @@ The completed exercise is due on Tuesday, January 14th at 1:00 pm.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: Completed ENV 710 statistics course in R last semester which included basic statistical analysis and some linear modeling
+> Answer: Completed ENV 710 statistics course in R last semester which included basic statistical analysis and some linear modeling. Some additional experience with data cleaning and simple analysis with MP work and also my work study job last semester - no formal training, just figuring it out as I go. Have used some tidyr tools, ggplot visualizations, not much experience with R markdown. Limited use of GitHub with the ELA project. 
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: My experience with R thus far has certainly involved a lot of troubleshooting - I think I am pretty good as fixing my own issues or finding creative work-arounds when needed.
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: Not really. Looking forward to learning how to go about the cleaning and analysis process more systematically and efficiently.
 
 
 ## 2) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository  and that you have updated your course README file. 
 
-> Answer: 
+> Answer: https://github.com/slm119/Environmental_Data_Analytics_2020
 
 
