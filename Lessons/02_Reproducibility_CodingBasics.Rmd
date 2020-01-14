@@ -127,6 +127,8 @@ longnameforillustration
 ```{r}
 long_name_for_illustration <- 11
 
+long_name_for_illustration
+
 ```
 
 ### Comments
@@ -226,7 +228,7 @@ meal2 <- recipe4(2); meal2
 meal3 <- recipe5(3); meal3
 
 recipe6 <- function(x){
-  ifelse(x<3, x*2, x/2)
+  ifelse(x<3, x*2, x/2) #ifelse(test statement, if yes return this, if no return this)
   
 }
 
