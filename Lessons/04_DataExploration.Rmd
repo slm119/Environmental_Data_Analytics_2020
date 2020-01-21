@@ -47,7 +47,7 @@ At the top of your R scripts, you should load any packages that need to be used 
 At the same time, you should also load your theme if you are doing any data visualization with ggplot. More on this later.
 
 ```{r, message = FALSE}
-# Load package
+# Load package - always want to use "message = FALSE" in the header when knitting this section to avoid errors
 library(tidyverse)
 ```
 
@@ -55,19 +55,22 @@ library(tidyverse)
 
 Datasets can be imported into R. Good data practices dictate that raw data (from yourself or others) should not be changed and re-saved within the spreadsheet, but rather the data should be changed with reproducible techniques and saved as a new file. Note:  data should be saved in nonproprietary formats, namely .csv or .txt files rather than .xls or .xlsx files. 
 
-To read in a data file, you may specify a file path with an *absolute* or a *relative* file path. As above with your working directory, it is a better practice to use a relative directory. To navigate a relative file path, use `./` followed by the tab key to navigate  forward in the folder structure, and use `../` followed by the tab key to navigate back out of the folder structure. For example, this lesson is located in the "Lessons" folder, and we need to navigate into the "Data" folder. After clicking the correct folder, use `/` and press tab again to continue the process. 
+To read in a data file, you may specify a file path with an *absolute* or a *relative* file path. As above with your working directory, it is a better practice to use a relative directory. To navigate a relative file path, use `./` followed by the tab key to navigate  forward in the folder structure, and use `../` followed by the tab key to navigate back out of the folder structure. For example, this lesson is located in the "Lessons" folder, and we need to navigate into the "Data" folder. After clicking the correct folder, use *`/` and press tab* again to continue the process. 
 
 You may also import datasets from the Files tab, but this is not recommended since this is not reproducible.
+
+./ forward from current wd
+../ backward from current wd
 
 ```{r}
 # Absolute file path (not recommended)
 #read.csv("/Users/katerisalk/Documents/Duke/Courses/Environmental_Data_Analytics/Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 
 # Relative file path (friendly for users regardless of machine)
-USGS.flow.data <- read.csv("./Data/Raw/USGS_Site02085000_Flow_Raw.csv")
+USGS.flow.data <-  read.csv("./Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 
 # What happens if we don't assign a name to our imported dataset?
-#read.csv("../Data/Raw/USGS_Site02085000_Flow_Raw.csv")
+#read.csv("./Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 
 # Another option is to choose with your browser
 # read.csv(file.choose())
@@ -80,7 +83,7 @@ USGS.flow.data <- read.csv("./Data/Raw/USGS_Site02085000_Flow_Raw.csv")
 ## EXPLORE YOUR DATASET
 
 Take a moment to read through the README file associated with the USGS dataset on discharge at the Eno River. Where can you find this file? How does the placement and information found in this file relate to the best practices for reproducible data analysis?
-> ANSWER: 
+> ANSWER: data lives on the usgs website https://waterdata.usgs.gov/nwis, all the selection parameters are given in the readme file, also includes any information needed to interpret codes and column names, also includes name and contact info for the person responsible for the "data assembler"
 
 ```{r}
 View(USGS.flow.data)
@@ -89,7 +92,7 @@ View(USGS.flow.data)
 class(USGS.flow.data)
 colnames(USGS.flow.data)
 
-# Rename columns
+# Rename columns - with colnames function, must rename all the column naems
 colnames(USGS.flow.data) <- c("agency_cd", "site_no", "datetime", 
                               "discharge.max", "discharge.max.approval", 
                               "discharge.min", "discharge.min.approval", 
@@ -98,14 +101,15 @@ colnames(USGS.flow.data) <- c("agency_cd", "site_no", "datetime",
                               "gage.height.min", "gage.height.min.approval", 
                               "gage.height.mean", "gage.height.mean.approval")
 str(USGS.flow.data)
-dim(USGS.flow.data)
+dim(USGS.flow.data) # data dimensions
 length(USGS.flow.data)
 
 head(USGS.flow.data)
-head(USGS.flow.data, 10)
-tail(USGS.flow.data, 5)
-USGS.flow.data[30000:30005, c(3, 8, 14)]
+head(USGS.flow.data, 10) # first ten rows
+tail(USGS.flow.data, 5) # last 5 rows
+USGS.flow.data[30000:30005, c(3, 8, 14)] # show rows 30000 to 30005 and columns 3 8 and 14
 
+# shows classes of each column
 class(USGS.flow.data$datetime)
 class(USGS.flow.data$discharge.mean)
 class(USGS.flow.data$gage.height.mean)
@@ -115,7 +119,7 @@ summary(USGS.flow.data)
 ```
 
 What happened to blank cells in the spreadsheet when they were imported into R?
-> Answer: 
+> Answer: some were filled with "NA" and some are still blank
 
 ## Adjusting Datasets
 
@@ -129,10 +133,10 @@ summary(USGS.flow.data$gage.height.mean)
 ```
 Question: What types of research questions might make it favorable to remove NAs from a dataset, and what types of research questions might make it favorable to retain NAs in the dataset?
 
-> Answer: 
+> Answer: if analysis requires all values, may need to eliminate any rows that have missing values
 
 ```{r}
-USGS.flow.data.complete <- na.omit(USGS.flow.data)
+USGS.flow.data.complete <- na.omit(USGS.flow.data) # removes rows where any values are "NA" 
 dim(USGS.flow.data)
 dim(USGS.flow.data.complete)
 
@@ -144,9 +148,9 @@ summary(USGS.flow.data.complete$discharge.mean)
 
 ### Formatting dates
 
-R will often import dates as factors or characters rather than dates. To fix, this we need to tell R that it is looking at dates. We also need to specify the format the dates are in. By default, if you don't provide a format, R will attempt to use %Y-%m-%d or %Y/%m/%d as a default. Note: if you are working collaboratively in an international setting, using a year-month-day format in spreadsheets is the least ambiguous of date formats. Make sure to check whether month-day-year or day-month-year is used in an ambiguously formatted spreadsheet.
+R will often import dates as factors or characters rather than dates. To fix this we need to tell R that it is looking at dates. We also need to specify the format the dates are in. By default, if you don't provide a format, R will attempt to use %Y-%m-%d or %Y/%m/%d as a default. Note: if you are working collaboratively in an international setting, using a year-month-day format in spreadsheets is the least ambiguous of date formats. Make sure to check whether month-day-year or day-month-year is used in an ambiguously formatted spreadsheet.
 
-Formatting of dates in R: 
+*Formatting of dates in R:* 
 
 %d  day as number (0-31)
 %m  month (00-12, can be e.g., 01 or 1)
@@ -168,8 +172,9 @@ help(as.Date)
 # (code must be uncommented)
 today <- Sys.Date()
 format(today, format = "%B")
-#format(today, format = "")
-#format(today, format = "")
+today
+format(today, format = "%d/%m/%y")
+format(today, format = "%d/%b/%Y")
 #format(today, format = "")
 
 USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%m/%d/%y") 
@@ -178,17 +183,17 @@ USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%m/%d/%y")
 Note that for every date prior to 1969, R has assigned the date in the 2000s rather than the 1900s. This can be fixed with an `ifelse` statement inside a function. Run through the code below and write what is happening in the comment above each line.
 
 ```{r}
-# 
+# reformat the datetime row the yearmonthday format to get it into one integer string
 USGS.flow.data$datetime <- format(USGS.flow.data$datetime, "%y%m%d")
 
-#
+# use a function to tell R that if the date is greater than 181231, add 19 to the beginning of the date, if not add 20 to the begining of the date string
 create.early.dates <- (function(d) {
        paste0(ifelse(d > 181231,"19","20"),d)
        })
-#
+# use the function to fix the row
 USGS.flow.data$datetime <- create.early.dates(USGS.flow.data$datetime)
 
-#
+# format to show the full year
 USGS.flow.data$datetime <- as.Date(USGS.flow.data$datetime, format = "%Y%m%d") 
 
 ```
@@ -199,6 +204,8 @@ We just edited our raw dataset into a processed form. We may want to return to t
 
 
 ```{r}
+dir.create("./Data/Processed")
+
 write.csv(USGS.flow.data, file = "./Data/Processed/USGS_Site02085000_Flow_Processed.csv", row.names=FALSE)
 
 ```
