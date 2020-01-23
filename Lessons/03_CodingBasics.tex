@@ -1,0 +1,644 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={3: Coding Basics},
+  pdfauthor={Environmental Data Analytics \textbar{} Kateri Salk},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{3: Coding Basics}
+\author{Environmental Data Analytics \textbar{} Kateri Salk}
+\date{Spring 2020}
+
+\begin{document}
+\maketitle
+
+\hypertarget{objectives}{%
+\subsection{Objectives}\label{objectives}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Discuss and navigate different data types in R
+\item
+  Create, manipulate, and explore datasets
+\item
+  Call packages in R
+\end{enumerate}
+
+\hypertarget{data-types-in-r}{%
+\subsection{Data Types in R}\label{data-types-in-r}}
+
+R treats objects differently based on their characteristics. For more
+information, please see:
+\url{https://www.statmethods.net/input/datatypes.html}.
+
+\begin{itemize}
+\item
+  \textbf{Vectors} 1 dimensional structure that contains elements of the
+  same type.
+\item
+  \textbf{Matrices} 2 dimensional structure that contains elements of
+  the same type.
+\item
+  \textbf{Arrays} Similar to matrices, but can have more than 2
+  dimensions. We will not delve into arrays in depth.
+\item
+  \textbf{Lists} Ordered collection of elements that can have different
+  modes.
+\item
+  \textbf{Data Frames} 2 dimensional structure that is more general than
+  a matrix. Columns can have different modes (e.g., numeric and factor).
+  When we import csv files into the R workspace, they will enter as data
+  frames.
+\end{itemize}
+
+Define what each new piece of syntax does below (i.e., fill in blank
+comments). Note that the R chunk has been divided into sections (\# at
+beginning of line, ---- at end)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Vectors ----}
+\NormalTok{vector1 <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{,}\FloatTok{5.3}\NormalTok{,}\DecValTok{6}\NormalTok{,}\OperatorTok{-}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{) }\CommentTok{# numeric vector}
+\NormalTok{vector1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  1.0  2.0  5.3  6.0 -2.0  4.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vector2 <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"one"}\NormalTok{,}\StringTok{"two"}\NormalTok{,}\StringTok{"three"}\NormalTok{) }\CommentTok{# character vector}
+\NormalTok{vector2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "one"   "two"   "three"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vector3 <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{,}\OtherTok{TRUE}\NormalTok{,}\OtherTok{TRUE}\NormalTok{,}\OtherTok{FALSE}\NormalTok{,}\OtherTok{TRUE}\NormalTok{,}\OtherTok{FALSE}\NormalTok{) }\CommentTok{#logical vector}
+\NormalTok{vector3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  TRUE  TRUE  TRUE FALSE  TRUE FALSE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vector1[}\DecValTok{3}\NormalTok{] }\CommentTok{# return the third item in vector1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Matrices ----}
+\NormalTok{matrix1 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{20}\NormalTok{, }\DataTypeTok{nrow =} \DecValTok{5}\NormalTok{,}\DataTypeTok{ncol =} \DecValTok{4}\NormalTok{) }\CommentTok{# create a matrix with values 1 through 20 with 5 rows and 4 columns}
+\NormalTok{matrix1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    6   11   16
+## [2,]    2    7   12   17
+## [3,]    3    8   13   18
+## [4,]    4    9   14   19
+## [5,]    5   10   15   20
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix2 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{20}\NormalTok{, }\DataTypeTok{nrow =} \DecValTok{5}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{4}\NormalTok{, }\DataTypeTok{byrow =} \OtherTok{TRUE}\NormalTok{) }\CommentTok{# same as above but enter values by moving across the columns first}
+\NormalTok{matrix2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    2    3    4
+## [2,]    5    6    7    8
+## [3,]    9   10   11   12
+## [4,]   13   14   15   16
+## [5,]   17   18   19   20
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix3 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{1}\OperatorTok{:}\DecValTok{20}\NormalTok{, }\DataTypeTok{nrow =} \DecValTok{5}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{4}\NormalTok{, }\DataTypeTok{byrow =} \OtherTok{TRUE}\NormalTok{, }\CommentTok{# return after comma continues the line}
+                  \DataTypeTok{dimnames =} \KeywordTok{list}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"uno"}\NormalTok{, }\StringTok{"dos"}\NormalTok{, }\StringTok{"tres"}\NormalTok{, }\StringTok{"cuatro"}\NormalTok{, }\StringTok{"cinco"}\NormalTok{), }
+                                  \KeywordTok{c}\NormalTok{(}\StringTok{"un"}\NormalTok{, }\StringTok{"deux"}\NormalTok{, }\StringTok{"trois"}\NormalTok{, }\StringTok{"quatre"}\NormalTok{))) }\CommentTok{# give names for each column and row - rows first, then columns }
+\NormalTok{matrix3}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##        un deux trois quatre
+## uno     1    2     3      4
+## dos     5    6     7      8
+## tres    9   10    11     12
+## cuatro 13   14    15     16
+## cinco  17   18    19     20
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix1[}\DecValTok{4}\NormalTok{, ] }\CommentTok{# return matrix 1 , fourth row}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  4  9 14 19
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix1[ , }\DecValTok{3}\NormalTok{] }\CommentTok{# return 3rd column}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 11 12 13 14 15
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix1[}\KeywordTok{c}\NormalTok{(}\DecValTok{12}\NormalTok{, }\DecValTok{14}\NormalTok{)] }\CommentTok{# return the 12th and 14th terms from matrix 1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 12 14
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix1[}\KeywordTok{c}\NormalTok{(}\DecValTok{12}\OperatorTok{:}\DecValTok{14}\NormalTok{)] }\CommentTok{# return values 12 through 14}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 12 13 14
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{matrix1[}\DecValTok{2}\OperatorTok{:}\DecValTok{4}\NormalTok{, }\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{] }\CommentTok{# return rows 2 thru 4 and columns 1 thru 3 from m1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      [,1] [,2] [,3]
+## [1,]    2    7   12
+## [2,]    3    8   13
+## [3,]    4    9   14
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cells <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{26}\NormalTok{, }\DecValTok{24}\NormalTok{, }\DecValTok{68}\NormalTok{)}
+\NormalTok{rnames <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"R1"}\NormalTok{, }\StringTok{"R2"}\NormalTok{)}
+\NormalTok{cnames <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"C1"}\NormalTok{, }\StringTok{"C2"}\NormalTok{) }
+\NormalTok{matrix4 <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(cells, }\DataTypeTok{nrow =} \DecValTok{2}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{2}\NormalTok{, }\DataTypeTok{byrow =} \OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{dimnames =} \KeywordTok{list}\NormalTok{(rnames, cnames)) }\CommentTok{# build a matrix with values from "cells" and row and col names from vectors}
+\NormalTok{matrix4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    C1 C2
+## R1  1 26
+## R2 24 68
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Lists ---- }
+\NormalTok{list1 <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\DataTypeTok{name =} \StringTok{"Maria"}\NormalTok{, }\DataTypeTok{mynumbers =}\NormalTok{ vector1, }\DataTypeTok{mymatrix =}\NormalTok{ matrix1, }\DataTypeTok{age =} \FloatTok{5.3}\NormalTok{); list1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## $name
+## [1] "Maria"
+## 
+## $mynumbers
+## [1]  1.0  2.0  5.3  6.0 -2.0  4.0
+## 
+## $mymatrix
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    6   11   16
+## [2,]    2    7   12   17
+## [3,]    3    8   13   18
+## [4,]    4    9   14   19
+## [5,]    5   10   15   20
+## 
+## $age
+## [1] 5.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{list1[[}\DecValTok{2}\NormalTok{]] }\CommentTok{# build a list with several different elements}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  1.0  2.0  5.3  6.0 -2.0  4.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Data Frames ----}
+\NormalTok{d <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{4}\NormalTok{) }\CommentTok{# What type of vector? integer/numeric}
+\NormalTok{e <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"red"}\NormalTok{, }\StringTok{"white"}\NormalTok{, }\StringTok{"red"}\NormalTok{, }\OtherTok{NA}\NormalTok{) }\CommentTok{# What type of vector? character}
+\NormalTok{f <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{, }\OtherTok{TRUE}\NormalTok{, }\OtherTok{FALSE}\NormalTok{) }\CommentTok{# What type of vector? logic}
+\NormalTok{dataframe1 <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(d,e,f) }\CommentTok{# create a dataframe by combining vectors d e and f}
+\KeywordTok{names}\NormalTok{(dataframe1) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{,}\StringTok{"Color"}\NormalTok{,}\StringTok{"Passed"}\NormalTok{); }\KeywordTok{View}\NormalTok{(dataframe1) }\CommentTok{# specify the column names and then view the df}
+
+\NormalTok{dataframe1[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{,] }\CommentTok{# call rows 1 through 2, all columns}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   ID Color Passed
+## 1  1   red   TRUE
+## 2  2 white   TRUE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataframe1[}\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{,}\StringTok{"Passed"}\NormalTok{)] }\CommentTok{# call columns ID and Passed, and all rows}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   ID Passed
+## 1  1   TRUE
+## 2  2   TRUE
+## 3  3   TRUE
+## 4  4  FALSE
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{dataframe1}\OperatorTok{$}\NormalTok{ID }\CommentTok{# call just the ID column}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1 2 3 4
+\end{verbatim}
+
+Question: How do the different types of data appear in the Environment
+tab?
+
+\begin{quote}
+Answer: vectors are labeled by their name, and also by character type,
+and dimensions of the data (i.e.~single dimension vector with 6 entries
+shows {[}1:6{]})
+\end{quote}
+
+Question: In the R chunk below, write ``dataframe1\$''. Press
+\texttt{tab} after you type the dollar sign. What happens?
+
+\begin{quote}
+Answer: R gives you the option of all the different columns in df1
+\end{quote}
+
+\hypertarget{coding-challenge}{%
+\subsubsection{Coding challenge}\label{coding-challenge}}
+
+Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North
+Carolina. Create two vectors, one representing the high temperature on
+each of the ten days and one representing the low.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{highs_f <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{44}\NormalTok{,}\DecValTok{46}\NormalTok{,}\DecValTok{50}\NormalTok{,}\DecValTok{40}\NormalTok{,}\DecValTok{39}\NormalTok{,}\DecValTok{45}\NormalTok{,}\DecValTok{52}\NormalTok{,}\DecValTok{49}\NormalTok{,}\DecValTok{50}\NormalTok{,}\DecValTok{50}\NormalTok{)}
+\NormalTok{lows_f <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{29}\NormalTok{,}\DecValTok{28}\NormalTok{,}\DecValTok{27}\NormalTok{,}\DecValTok{20}\NormalTok{,}\DecValTok{18}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{19}\NormalTok{,}\DecValTok{27}\NormalTok{,}\DecValTok{31}\NormalTok{,}\DecValTok{34}\NormalTok{)}
+\NormalTok{cnames <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"lows"}\NormalTok{, }\StringTok{"highs"}\NormalTok{)}
+
+\NormalTok{temp.forecast <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(lows_f,highs_f)}
+\KeywordTok{names}\NormalTok{(temp.forecast) <-}\StringTok{ }\NormalTok{cnames}
+\NormalTok{temp.forecast}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    lows highs
+## 1    29    44
+## 2    28    46
+## 3    27    50
+## 4    20    40
+## 5    18    39
+## 6    15    45
+## 7    19    52
+## 8    27    49
+## 9    31    50
+## 10   34    50
+\end{verbatim}
+
+Now, create two additional vectors that include the ten-day forecast for
+the high and low temperatures in Celsius.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# (32°F − 32) × 5/9 }
+\NormalTok{highs_c <-}\StringTok{ }\NormalTok{highs_f}\DecValTok{-32}\OperatorTok{*}\DecValTok{5}\OperatorTok{/}\DecValTok{9}
+\NormalTok{lows_c <-}\StringTok{ }\NormalTok{lows_f}\DecValTok{-32}\OperatorTok{*}\DecValTok{5}\OperatorTok{/}\DecValTok{9}
+\end{Highlighting}
+\end{Shaded}
+
+Combine your four vectors into a data frame and add informative column
+names.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{col.names <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"low (deg F)"}\NormalTok{, }\StringTok{"high (deg F)"}\NormalTok{, }\StringTok{"low (deg C)"}\NormalTok{, }\StringTok{"high (deg C)"}\NormalTok{)}
+
+\NormalTok{durham.temps}\FloatTok{.10}\NormalTok{day <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(lows_f,highs_f, lows_c, highs_c)}
+
+\KeywordTok{names}\NormalTok{(durham.temps}\FloatTok{.10}\NormalTok{day) <-}\StringTok{ }\NormalTok{col.names}
+
+\NormalTok{durham.temps}\FloatTok{.10}\NormalTok{day               }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    low (deg F) high (deg F) low (deg C) high (deg C)
+## 1           29           44  11.2222222     26.22222
+## 2           28           46  10.2222222     28.22222
+## 3           27           50   9.2222222     32.22222
+## 4           20           40   2.2222222     22.22222
+## 5           18           39   0.2222222     21.22222
+## 6           15           45  -2.7777778     27.22222
+## 7           19           52   1.2222222     34.22222
+## 8           27           49   9.2222222     31.22222
+## 9           31           50  13.2222222     32.22222
+## 10          34           50  16.2222222     32.22222
+\end{verbatim}
+
+Use the common functions \texttt{summary} and \texttt{sd} to obtain
+basic data summaries of the ten-day forecast. How would you call these
+functions differently for the entire data frame vs.~a single column?
+Attempt to demonstrate both options below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(durham.temps}\FloatTok{.10}\NormalTok{day)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   low (deg F)     high (deg F)    low (deg C)      high (deg C)  
+##  Min.   :15.00   Min.   :39.00   Min.   :-2.778   Min.   :21.22  
+##  1st Qu.:19.25   1st Qu.:44.25   1st Qu.: 1.472   1st Qu.:26.47  
+##  Median :27.00   Median :47.50   Median : 9.222   Median :29.72  
+##  Mean   :24.80   Mean   :46.50   Mean   : 7.022   Mean   :28.72  
+##  3rd Qu.:28.75   3rd Qu.:50.00   3rd Qu.:10.972   3rd Qu.:32.22  
+##  Max.   :34.00   Max.   :52.00   Max.   :16.222   Max.   :34.22
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(durham.temps}\FloatTok{.10}\NormalTok{day}\OperatorTok{$}\StringTok{`}\DataTypeTok{low (deg F)}\StringTok{`}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 6.321041
+\end{verbatim}
+
+\hypertarget{packages}{%
+\subsection{Packages}\label{packages}}
+
+The Packages tab in the notebook stores the packages that you have saved
+in your system. A checkmark next to each package indicates whether the
+package has been loaded into your current R session. Given that R is an
+open source software, users can create packages that have specific
+functionalities, with complicated code ``packaged'' into a simple
+commands.
+
+If you want to use a specific package that is not in your libaray
+already, you need to install it. You can do this in two ways:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Click the install button in the packages tab. Type the package name,
+  which should autocomplete below (case matters). Make sure to check
+  ``intall dependencies,'' which will also install packages that your
+  new package uses.
+\item
+  Type \texttt{install.packages("packagename")} into your R chunk or
+  console. It will then appear in your packages list. You only need to
+  do this once.
+\end{enumerate}
+
+If a package is already installed, you will need to load it every
+session. You can do this in two ways:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Click the box next to the package name in the Packages tab.
+\item
+  Type \texttt{library(packagename)} into your R chunk or console.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# We will use the packages dplyr and ggplot2 regularly. }
+\CommentTok{#install.packages("dplyr") }
+\CommentTok{#install.packages("ggplot2")}
+\CommentTok{# comment out install commands, use only when needed and re-comment}
+
+\KeywordTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+
+\CommentTok{# Some packages are umbrellas under which other packages are loaded}
+\CommentTok{#install.packages("tidyverse")}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching packages ----------------------- tidyverse 1.3.0 --
+\end{verbatim}
+
+\begin{verbatim}
+## v tibble  2.1.3     v purrr   0.3.3
+## v tidyr   1.0.0     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts -------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+\end{verbatim}
+
+Question: What happens in the console when you load a package?
+
+\begin{quote}
+Answer: console tells you when packages have been loaded and whether
+there are any conflicts in function names between packages
+\end{quote}
+
+\hypertarget{tips-and-tricks}{%
+\subsection{Tips and Tricks}\label{tips-and-tricks}}
+
+\begin{itemize}
+\item
+  Sequential section headers can be created by using at least four -, =,
+  and \# characters.
+\item
+  The command \texttt{require(packagename)} will also load a package,
+  but it will not give any error or warning messages if there is an
+  issue.
+\item
+  You may be asked to restart R when installing or updating packages.
+  Feel free to say no, as this will obviously slow your progress.
+  However, if the functionality of your new package isn't working
+  properly, try restarting R as a first step.
+\item
+  If asked ``Do you want to install from sources the packages which
+  needs compilation?'', type \texttt{yes} into the console.
+\item
+  You should only install packages once on your machine. If you store
+  \texttt{install.packages} in your R chunks/scripts, comment these
+  lines out.
+\item
+  Update your packages regularly!
+\end{itemize}
+
+\end{document}
