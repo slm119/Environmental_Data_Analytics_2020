@@ -188,7 +188,7 @@ USGS.flow.data$datetime <- format(USGS.flow.data$datetime, "%y%m%d")
 
 # use a function to tell R that if the date is greater than 181231, add 19 to the beginning of the date, if not add 20 to the begining of the date string
 create.early.dates <- (function(d) {
-       paste0(ifelse(d > 181231,"19","20"),d)
+       paste0(ifelse(d > 191231,"19","20"),d)
        })
 # use the function to fix the row
 USGS.flow.data$datetime <- create.early.dates(USGS.flow.data$datetime)
