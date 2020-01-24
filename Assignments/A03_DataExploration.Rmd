@@ -44,9 +44,10 @@ litter.data <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
 4. How is litter and woody debris sampled as part of the NEON network? Read the NEON_Litterfall_UserGuide.pdf document to learn more. List three pieces of salient information about the sampling methods here: 
 
 > Answer: 
-*
-*
-*
+
+* masses are reported for separate functional groups - e.g. leaves, twigs, seeds, flowers, etc
+* the sampling design is spatially distributed with a pair (one elevated and one ground litter trap) per 400 sq m of the study plot (there are 20 plots), so there may be varying numbers of traps for different plots
+* temporal sampling is irregular - with more frequent sampling during autumn and gaps during winter or dormant seasons
 
 
 
@@ -55,88 +56,107 @@ litter.data <- read.csv("./Data/Raw/NEON_NIWO_Litter_massdata_2018-08_raw.csv")
 5. What are the dimensions of the dataset?
 
 ```{r}
-
+dim(neonic.data)
 ```
 
 6. Using the `summary` function, determine the most common effects that are studied. Why might these effects specifically be of interest?
 ```{r}
-
+summary(neonic.data$Effect)
 ```
 
-> Answer: 
+> Answer: most common effects studied were "mortality" and "population" likely becuase these are the easiest and quickest to test. These effects are of interest because the researchers want to determine whether exposure to neonics could be responsible for decreased insect populations.
 
 7. Using the `summary` function, determine the six most commonly studied species in the dataset (common name). What do these species have in common, and why might they be of interest over other insects? Feel free to do a brief internet search for more information if needed.
 
 ```{r}
-
+summary(neonic.data$Species.Common.Name)
 ```
 
-> Answer: 
+> Answer: The top 6 most reported species are all hymenoptera (bees and wasps) - bees are ecologically important for pollination and therefore food production and parasitic wasps are often beneficial insects for agricultural crops because they control populations of unwanted pest insects
 
 8. Concentrations are always a numeric value. What is the class of Conc.1..Author. in the dataset, and why is it not numeric?
 
 ```{r}
+class(neonic.data$Conc.1..Author.)
 
 ```
 
-> Answer:
-
+> Answer: some of the values include other symbols like ~ and / and so they cannot be interpreted as numeric values by R
 
 
 ## Explore your data graphically (Neonics)
 
 9. Using `geom_freqpoly`, generate a plot of the number of studies conducted by publication year. 
 ```{r}
-
+ggplot(neonic.data) +
+  geom_freqpoly(aes(x=Publication.Year), binwidth = 1)
 ```
 
 10. Reproduce the same graph but now add a color aesthetic so that different Test.Location are displayed as different colors.
 ```{r}
-
+ggplot(neonic.data) +
+  geom_freqpoly(aes(x=Publication.Year, color = Test.Location), binwidth = 1)
 ```
 
 Interpret this graph. What are the most common test locations, and do they differ over time?
 
-> Answer: 
+> Answer: The number of studies has increased substantially over time. Field studies were more common at first but then lab studies took over in mid 2000s, field studies again had a resurgence but then were quickly replaced with lab studies after 2010. Other test locations remained pretty uncommon
 
 11. Create a bar graph of Endpoint counts. What are the two most common end points, and how are they defined? Consult the ECOTOX_CodeAppendix for more information. 
 
 ```{r}
-
+ggplot(neonic.data)+
+  geom_bar(aes(x=Endpoint))+
+  coord_flip()
 ```
 
-> Answer: 
->
+> Answer: most common endpoints reported are NOEL (No observed effect level) and LOEL (lowest observed effect level).
+
+> In a study design using multiple different concentrations, the LOEL is defined as the lowest concentration at which a statistically stignificant effect (deviation from the control) is seen. And the NOEL is the highest concentration at which there is no statistically significant difference from the control. 
 
 ## Explore your data (Litter)
 
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018. 
 ```{r}
+class(litter.data$collectDate)
+litter.data$collectDate <- as.Date(litter.data$collectDate, format = "%Y-%m-%d")
+class(litter.data$collectDate)
 
+unique(litter.data$collectDate)
 ```
 
 13. Using the `unique` function, determine how many plots were sampled at Niwot Ridge. How is the information obtained from `unique` different from that obtained from `summary`?
 
 ```{r}
-
+unique(litter.data$plotID)
+summary(litter.data$plotID)
 ```
 
-> Answer: 
+> Answer: 12 plots were sampled. "Unique" lists the different unique values in the column and the total number of levels while "summary" lists the values also with the number of times they occur
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 ```{r}
-
+ggplot(litter.data, aes(x=functionalGroup))+
+  geom_bar()
 ```
 
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup. 
 ```{r}
+litter.plot <- ggplot(litter.data, aes(x=functionalGroup, y = dryMass))
 
+litter.plot +
+  geom_boxplot() #+
+  #scale_y_log10()
+
+litter.plot +
+  geom_violin() #+
+  #scale_y_log10()
 ```
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer: 
+> Answer: the distributions of dryMass have a wide spread so the violin plot does not effectively show the shape of the distribution unless a log transformation is used
 
 What type(s) of litter tend to have the highest biomass at these sites? 
 
-> Answer: 
+> Answer: "Needles" and "Mixed" seem to have the highest dryMass of the different funcitonal groups
