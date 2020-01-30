@@ -17,7 +17,7 @@ editor_options:
 
 ```{r, message = FALSE}
 getwd()
-library(plyr)
+library(plyr) # load plyr first so that dplyr is masking out plyr, what ever is loaded most recently will mask out previous ones
 library(tidyverse)
 library(lubridate)
 NTL.phys.data.PeterPaul <- read.csv("./Data/Processed/NTL-LTER_Lake_ChemistryPhysics_PeterPaul_Processed.csv")
@@ -44,7 +44,7 @@ colnames(NTL.nutrient.data.PeterPaul)
 dim(NTL.nutrient.data.PeterPaul)
 str(NTL.nutrient.data.PeterPaul)
 summary(NTL.nutrient.data.PeterPaul$lakename) 
-# Notice that other lake names didn't go away, even though they have zero values
+# Notice that other lake names didn't go away, even though they have zero values need to *drop levels*
 NTL.nutrient.data.PeterPaul <- droplevels(NTL.nutrient.data.PeterPaul)
 summary(NTL.nutrient.data.PeterPaul$lakename)
 summary(NTL.nutrient.data.PeterPaul$comments)
@@ -52,10 +52,10 @@ class(NTL.nutrient.data.PeterPaul$sampledate)
 NTL.nutrient.data.PeterPaul$sampledate <- as.Date(NTL.nutrient.data.PeterPaul$sampledate, format = "%m/%d/%y")
 
 NTL.nutrient.data.PeterPaul <- 
-  NTL.nutrient.data.PeterPaul %>% #
-  mutate(month = month(sampledate)) %>% #
-  select(lakeid:daynum, month, sampledate:comments) %>% # 
-  drop_na(depth)
+  NTL.nutrient.data.PeterPaul %>% # specifies the df to use
+  mutate(month = month(sampledate)) %>% # add a month column
+  select(lakeid:daynum, month, sampledate:comments) %>% # select the columns you want
+  drop_na(depth) # drop rows where depth is shown as NA
 
 # Save processed nutrient file
 write.csv(NTL.nutrient.data.PeterPaul, row.names = FALSE, 
@@ -69,6 +69,9 @@ NTL.nutrient.data.PeterPaul.subset <- select(NTL.nutrient.data.PeterPaul,
                                              lakename, year4, daynum, month, sampledate, depth:po4)
 
 # write a more succinct line of code to subset the nutrient dataset. 
+
+NTL.nutrient.data.PeterPaul.subset <- NTL.nutrient.data.PeterPaul %>%
+  select(lakename:sampledate,depth:po4)
 
 ```
 
@@ -121,7 +124,9 @@ Let's say we want to generate a new dataset that contains all possible physical 
 
 ```{r}
 
-NTL.phys.nutrient.data.PeterPaul <- full_join(NTL.phys.data.PeterPaul.subset, NTL.nutrient.data.PeterPaul.subset)
+NTL.phys.nutrient.data.PeterPaul <- #full_join is usually the most used
+  full_join(NTL.phys.data.PeterPaul.subset,
+            NTL.nutrient.data.PeterPaul.subset)
 
 write.csv(NTL.phys.nutrient.data.PeterPaul, row.names = FALSE, 
           file ="./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv")
@@ -143,16 +148,21 @@ Litter.2019 <- rbind(Litter.June2016, Litter.July2016, Litter.August2016)
 However, there are 20 months in this dataset, so importing all these files individually would be tedious to code. Here is a more efficient way to import and combine all files.
 
 ```{r}
+# use list.files to read in all files in the same folder - first need to create a list with all the file paths
 LitterFiles = list.files(path = "./Data/Raw/NIWO_Litter/", pattern="*.csv", full.names=TRUE)
 LitterFiles
 
+# then read in all the listed files, separately
 Litter <- LitterFiles %>%
   ldply(read.csv)
+
+# then you could join those files or whatever you wanted
 ```
 
 We also have information about individual traps, including the location and type of landcover. Let's join these two datasets. Note that "siteID", "plotID" and "trapID" exist in both datasets, and we can join them by these conditions. Notice the dimensions of the final dataset.
 ```{r}
 Trap <- read.csv("./Data/Raw/NEON_NIWO_Litter_trapdata_raw.csv")
+# left join to add the trap info (which has much less info/smaller dimensions) to the onto the Litter data
 LitterTrap <- left_join(Litter, Trap, by = c("siteID", "plotID", "trapID"))
 
 dim(Litter)
@@ -171,6 +181,7 @@ write.csv(LitterTrap, row.names = FALSE,
 dplyr functionality, combined with the pipes operator, allows us to split datasets according to groupings (function: `group_by`), then run operations on those groupings and return the output of those operations. There is a lot of flexibility in this approach, but we will illustrate just one example today.
 
 ```{r}
+# make a table that summarises all the data for the surface, separated by lake and month of the year
 NTL.PeterPaul.summaries <- 
   NTL.phys.nutrient.data.PeterPaul %>%
   filter(depth == 0) %>%
