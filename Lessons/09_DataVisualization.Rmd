@@ -250,11 +250,18 @@ The following graph displays the counts of specific endpoints measured in neonic
 3. Adjust the x axis labels so they appear at a 45 degree angle. 
 4. Change the color and/or border on the bars. Should you have a consistent color across all bars, or a different color for each bar?
 ```{r}
+library(forcats)
 Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv")
+levels(Neonics$Endpoint)
+
 ggplot(Neonics) +
-  geom_bar(aes(x = Endpoint))
+  geom_bar(aes(x = reorder(Endpoint, length)))
 
-
-
-
+ggplot(Neonics) +
+  geom_bar(aes(x = forcats::fct_infreq(Endpoint)), color = "dark blue", fill = "blue")+
+  #scale_x_discrete(limits =
+  #                   rev(levels(Neonics$Endpoint)))+
+  theme(axis.text.x = element_text(angle = 45,  hjust = 1))
+  
+ 
 ```
