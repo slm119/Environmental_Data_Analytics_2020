@@ -17,6 +17,8 @@ editor_options:
 ```{r, message = FALSE, warning = FALSE}
 getwd()
 library(tidyverse)
+#install.packages("ggthemes")
+library(ggthemes)
 
 PeterPaul.chem.nutrients <- 
   read.csv("./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv")
@@ -59,6 +61,12 @@ O3plot4 <- ggplot(EPAair) +
   geom_point(aes(x = Date, y = Ozone)) +
   theme_classic()
 print(O3plot4)
+
+O3plot5 <- ggplot(EPAair) +
+  geom_point(aes(x = Date, y = Ozone)) +
+  theme_solid()
+print(O3plot5)
+
 ```
 
 Notice that some aspects of your graph have not been adjusted, including: 
@@ -100,11 +108,11 @@ O3plot7 <- ggplot(EPAair, aes(x = Date, y = Ozone)) +
   geom_point(alpha = 0.5, size = 1.5) +
   geom_text(x = as.Date("2020-01-01"), y = 45, label = "good", hjust = 1, fontface = "bold") +
   geom_text(x = as.Date("2020-01-01"), y = 95, label = "moderate", hjust = 1, fontface = "bold") +
-  geom_text(x = as.Date("2020-01-01"), y = 120, label = "unhealthy (sensitive groups)", hjust = 1, fontface = "bold") +
+  geom_text(x = as.Date("2020-01-01"), y = 120, label = "unhealthy (sensitive groups)", hjust = 1, fontface = "bold") + # hjust tells it to justify on the right side of the coordinates
   scale_x_date(limits = as.Date(c("2018-01-01", "2019-12-31")), 
     date_breaks = "2 months", date_labels = "%b %y") +
-  ylab(expression("O"[3]* " AQI Value")) +
-  theme(axis.text.x = element_text(angle = 45,  hjust = 1))
+  ylab(expression("O"[3]* " AQI Value")) + # subscript for O3
+  theme(axis.text.x = element_text(angle = 45,  hjust = 1)) # adjust angle of axis text
 print(O3plot7)  
 
 ```
@@ -155,9 +163,17 @@ nationalparkcolors (package)
 # install.packages("viridis")
 # install.packages("RColorBrewer")
 # install.packages("colormap")
+#install.packages("devtools")
+devtools::install_github("katiejolly/nationalparkcolors")
+# install.packages("wesanderson")
+# install.packages("LaCroixColoR") not available
 library(viridis)
 library(RColorBrewer)
 library(colormap)
+library(wesanderson)
+library(nationalparkcolors)
+
+
 
 scales::show_col(colormap(colormap = colormaps$viridis, nshades = 16))
 scales::show_col(colormap(colormap = colormaps$inferno, nshades = 16))
@@ -175,10 +191,10 @@ print(NvsP)
 NvsP2 <-
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = tn_ug, color = depth, shape = lakename)) +
   geom_point(alpha = 0.7, size = 2.5) +
-  #labs() + # change your legend labels here
+  labs(x = expression(paste("Total P (",mu,"g/L)")), y = expression(paste("Total N (",mu,"g/L)")), color = "Depth (m)", shape = "") + # change your legend labels here
   scale_shape_manual(values = c(15, 17)) +
-  #scale_color_distiller(palette = "Blues", direction = 1) + # use scale_color_brewer for discrete variables
-  scale_color_viridis(option = "magma", direction = -1) +
+  #scale_color_distiller(palette = "Blues", direction = 1, type = "qual") + # use scale_color_brewer for discrete variables
+  scale_color_viridis(option = "viridis", direction = -1) +
   theme(legend.position = "right", 
         legend.text = element_text(size = 12), legend.title = element_text(size = 12))
 print(NvsP2)
@@ -190,12 +206,14 @@ print(NvsP2)
 Nutrientplot <-
   ggplot(PeterPaul.chem.nutrients.gathered, aes(x = lakename, y = concentration, color = nutrient)) +
   geom_boxplot() +
-# place your additional edits here
+  labs(x = "", y = expression(paste("Conc.",mu,"g/L")), color = expression(paste("Nutrient (", mu, "g/L)")))+
   scale_y_continuous(expand = c(0, 0)) +
-  #scale_color_brewer(palette = "YlGnBu") +
+  scale_color_brewer(palette = "YlGnBu") +
   #scale_color_manual(values = c("#7fcdbb", "#41b6c4", "#1d91c0", "#225ea8", "#0c2c84")) +
   #scale_color_viridis(discrete = TRUE, end = 0.8) +
-  theme(legend.position = "right")
+  theme(legend.position = "right")+
+  scale_color_discrete(breaks = c("nh34", "no23", "tn_ug", "po4", "tp_ug"), 
+                       labels = c("ammonia/ammonium", "nitrate/nitrite", "Total N", "phosphate", "Total P"))
 print(Nutrientplot)
 ```
 
