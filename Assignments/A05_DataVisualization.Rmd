@@ -96,41 +96,44 @@ PP.nutrients.spread$month <- format(PP.nutrients.spread$sampledate, format = "%b
 boxplotA <- ggplot(PP.nutrients.spread)+
   geom_boxplot(aes(x = month, y = temperature_C, color = lakename))+
   labs(x = "Month", y = expression(Temp *degree* C),
-       color = "", title = "NTL LTER Lake Data")+
+       color = "")+
   scale_x_discrete(limits = month.abb[5:11])+
-  scale_color_brewer(type = "qual", palette = 2)+
-  theme(legend.position = "none",
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank())
+  scale_color_brewer(type = "qual", palette = 2)
+        
 print(boxplotA)
 
 
 boxplotB <- ggplot(PP.nutrients.spread)+
-  geom_boxplot(aes(x = month, y = tp_ug, color = lakename))+
+  geom_boxplot(aes(x = month, y = tp_ug, color = lakename), outlier.size = 0.4)+
   labs(x = "Month", y = expression(paste("Total P (", mu, "g/L)")),
        color = "")+
   scale_x_discrete(limits = month.abb[5:11])+
-  scale_color_brewer(type = "qual", palette = 2)+
-  theme(legend.position = "none",
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank())+
-  scale_y_log10()
+  scale_color_brewer(type = "qual", palette = 2)
 print(boxplotB)
 
 
 boxplotC <- ggplot(PP.nutrients.spread)+
-  geom_boxplot(aes(x = month, y = tn_ug, color = lakename))+
+  geom_boxplot(aes(x = month, y = tn_ug, color = lakename),outlier.size = 0.4)+
   labs(x = "Month", y = expression(paste("Total N (", mu, "g/L)")),
        color = "")+
   scale_x_discrete(limits = month.abb[5:11])+
-  scale_color_brewer(type = "qual", palette = 2)+
-  theme(axis.title.x = element_blank())+
-  scale_y_log10()
+  scale_color_brewer(type = "qual", palette = 2)
 print(boxplotC)
 
+boxplotA_grid <- boxplotA + 
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank())+
+  labs(title = "NTL LTER Lake Data")
 
-plot_grid(boxplotA, boxplotB, boxplotC, nrow = 3, align = 'hv', 
-          rel_heights = c(1.2, 1,1.55))
+
+boxplotB_grid <- boxplotB +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank())
+
+plot_grid(boxplotA_grid, boxplotB_grid, boxplotC, nrow = 3, align = 'hv', 
+          rel_heights = c(1.2, 1,1.85))
 
 ```
 
@@ -138,8 +141,8 @@ Question: What do you observe about the variables of interest over seasons and b
 
 > Answer: 
 * temperatures are generally higher but also have more variation in the summer months (July - Sep), and cooler with less variation in the spring and fall. Temps are pretty similar between the two lakes
-* Total P - no obvious seasonal trend, but ingeneral Peter Lake may have higher median total P than Paul in peak summer months
-* total N - again, no obvious seasonal variation, lakes are pretty similar but Peter lake may have a slightly higher median total N than Paul, especially in mid summer
+* Total P - no obvious seasonal trend, maybe a little higher in summr months, but in general Peter Lake may have higher median total P than Paul in peak summer months. Data are positively skewed. Also, I am not sure why there are negative values for TP concentration...that does not make sense, and there is not explanation in the metadata.
+* total N - again, no obvious seasonal variation, lakes are pretty similar but Peter lake may have a slightly higher median total N than Paul, especially in mid summer. Data are positively skewed.
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
