@@ -145,9 +145,10 @@ ggplot(EPAair, aes(x= Ozone, group = as.factor(Year), fill = as.factor(Year)))+
 
 #2
 ggplot(EPAair)+
-  geom_boxplot(aes(x=as.factor(Year), y = Ozone))+
+  geom_boxplot(aes(x = as.factor(Year), y = Ozone))+
   labs(x="Year", y = "Ozone Conc (ppm)")+
-  stat_summary(x=as.factor(Year), y = Ozone)
+  stat_summary(fun.y = mean, geom="text",
+               position=position_dodge(), label = c("a","b"))
 
 #3
 ggplot(EPAair)+
