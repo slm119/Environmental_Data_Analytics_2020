@@ -1,6 +1,6 @@
 ---
 title: "Assignment 6: GLMs week 1 (t-test and ANOVA)"
-author: "Student Name"
+author: "Sena McCrory"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -29,9 +29,17 @@ The completed exercise is due on Tuesday, February 18 at 1:00 pm.
 
 ```{r, message = FALSE}
 #1
+getwd()
+library(tidyverse)
+library(cowplot)
+library(agricolae)
 
+NTL.nutrients.PP <- read.csv("./Data/Processed/NTL-LTER_Lake_Nutrients_PeterPaul_Processed.csv")
 
 #2
+NTL.nutrients.PP$sampledate <- as.Date(NTL.nutrients.PP$sampledate, format = "%Y-%m-%d")
+head(NTL.nutrients.PP)
+str(NTL.nutrients.PP)
 
 ```
 
@@ -40,8 +48,13 @@ The completed exercise is due on Tuesday, February 18 at 1:00 pm.
 
 3. Wrangle your dataset so that it contains only surface depths and only the years 1993-1996, inclusive. Set month as a factor.
 ```{r}
+NTL.nutrients.PP_surface_93to96 <- NTL.nutrients.PP %>%
+  filter(depth == 0) %>%
+  filter(year4 >= 1993 & year4 <= 1996)
 
+NTL.nutrients.PP_surface_93to96$month <- as.factor(NTL.nutrients.PP_surface_93to96$month)
 
+class(NTL.nutrients.PP_surface_93to96$month)
 ```
 
 ## Analysis

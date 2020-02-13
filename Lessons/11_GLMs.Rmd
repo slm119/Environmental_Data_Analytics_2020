@@ -16,6 +16,7 @@ editor_options:
 ```{r, message = FALSE}
 getwd()
 library(tidyverse)
+#install.packages("agricolae")
 library(agricolae)
 
 Litter <- read.csv("./Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv")
@@ -62,22 +63,27 @@ qqnorm(Litter.Totals$dryMass); qqline(Litter.Totals$dryMass)
 # ANOVA is robust against departures from equal variance.
 bartlett.test(Litter.Totals$dryMass ~ Litter.Totals$plotID)
 
+ggplot(Litter.Totals, aes(x= as.factor(plotID), y = dryMass))+
+  geom_boxplot()
+
 # Format ANOVA as aov
 Litter.Totals.anova <- aov(data = Litter.Totals, dryMass ~ plotID)
-summary(Litter.Totals.anova)
+summary(Litter.Totals.anova) # at least one plot ID is diff than the others
 
 # Format ANOVA as lm
 Litter.Totals.anova2 <- lm(data = Litter.Totals, dryMass ~ plotID)
 summary(Litter.Totals.anova2)
+# plot ID are factors (0 or 1), so yhat(the mean of dry mass) = intercept(first alphabetical group) + estimate for that plot id. y is a constant, no slope 
 
 # Checking model fit and assumptions
 # ANOVA is robust against departures from normality.
 plot(Litter.Totals.anova2)
 
+
 # Post-hoc test
 TukeyHSD(Litter.Totals.anova)
 
-# Extract groupings for pairwise relationships
+# Extract groupings for pairwise relationships - creates letter groupings!!
 Litter.Totals.groups <- HSD.test(Litter.Totals.anova, "plotID", group = TRUE)
 Litter.Totals.groups
 
@@ -95,7 +101,7 @@ print(Litter.Totals.plot)
 
 What information does the output give us? How might we report this information in a report?
 
-> 
+> mean litter mass differed significantly among sites at niwot lter (fig 1; ANOVA, F(11,198) = 4.813. p < 0.0001) 
 
 
 ### Non-parametric equivalent of ANOVA: Kruskal-Wallis Test
@@ -109,6 +115,7 @@ To analyze specific pairs in the data, you must use a *post hoc* test. These inc
 Litter.kw <- kruskal.test(Litter.Totals$dryMass ~ Litter.Totals$plotID)
 Litter.kw
 
+#to assess pairwise diffrences in non-parametric
 # There are two functions to run the Dunn Test
 # dunn.test(Litter.Totals$dryMass, Litter.Totals$plotID, kw = T, 
 #           table = F, list = T, method = "holm", altp = T)   #From package dunn.test
@@ -120,6 +127,11 @@ Litter.kw
 A two-way ANOVA allows us to examine the effects of two categorical explanatory variables on a continuous response variable. What if we wanted to know how litter masses varied across functional groups and land cover class?
 
 ```{r}
+ggplot(Litter, aes(color=nlcdClass, y = dryMass, x = functionalGroup))+
+  geom_boxplot()+
+  scale_y_log10()
+
+
 # Format as aov
 Litter.anova.2way <- aov(data = Litter, dryMass ~ functionalGroup + nlcdClass)
 summary(Litter.anova.2way)
@@ -127,6 +139,8 @@ summary(Litter.anova.2way)
 # Format as lm
 Litter.anova.2way2 <- lm(data = Litter, dryMass ~ functionalGroup + nlcdClass)
 summary(Litter.anova.2way2)
+
+#intercept is flowers in evergreen (first alphabetically in both categories) so if you want the estimate of needles in a shrubscrub, yhat(needles,shrub) = intercept + functionalgrpneedles estimate + clcdclassschurbscrub estimate
 
 # Run a post-hoc test for pairwise differences
 TukeyHSD(Litter.anova.2way)
@@ -142,6 +156,7 @@ The output gives test statistics for each explanatory variable as well as the in
 # Format as aov
 Litter.anova.2way3 <- aov(data = Litter, dryMass ~ functionalGroup * nlcdClass)
 summary(Litter.anova.2way3)
+# interactin is significant, so the affect of of functional group depends on nlcd class
 
 # Format as lm
 Litter.anova.2way4 <- lm(data = Litter, dryMass ~ functionalGroup * nlcdClass)
@@ -154,17 +169,33 @@ If the interaction is significant, we interpret pairwise differences for the int
 # Run a post-hoc test for pairwise differences
 TukeyHSD(Litter.anova.2way3)
 
+#run with interaction so tha HSD output is useful
 Litter.interaction <- with(Litter, interaction(functionalGroup, nlcdClass))
 Litter.anova.2way5 <- aov(data = Litter, dryMass ~ Litter.interaction)
 
-Litter.groups <- HSD.test(Litter.anova.2way5, "Litter.interaction", group = TRUE)
+Litter.groups <- HSD.test(Litter.anova.2way5, "Litter.interaction", group = TRUE) #group = TRUE give us the letter groupings
 Litter.groups
 
 # Plot the results
 # Edit this graph to make it more visually appealing.
 # Add letters to represent statistical groupings.
+library(scales)
+
+Litter$functionalGroup <- reorder(Litter$functionalGroup, Litter$dryMass, FUN = "mean")
+levels(Litter$functionalGroup)
+
 Litter.anova.plot <- ggplot(Litter, aes(y = dryMass, x = nlcdClass, color = functionalGroup)) +
-  geom_boxplot()
+  geom_boxplot()+
+  scale_y_log10(limits = c(0.01, 120), labels = trans_format("log10", math_format(10^.x)))+
+  labs(x= "NLCD Class", y = "Dry Mass (g)", colr = "Functional group")+
+  stat_summary(aes(x=nlcdClass, y = dryMass, group = functionalGroup), position = position_dodge(0.75), 
+               geom = "text", fun.y = max, vjust = -1, size = 3.5,
+               label = c("d", "d", "d", "d", "d", "d", "d", "a",
+                          "d", "d", "d", "d", "d", "d", "d", "b",
+                         "d", "d", "d", "d", "d", "d", "cd", "bc"),
+               show.legend = FALSE)+
+  scale_color_brewer(type = "qual", palette = 2)
+
 print(Litter.anova.plot)
 
 ```
