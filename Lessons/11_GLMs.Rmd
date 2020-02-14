@@ -169,7 +169,7 @@ If the interaction is significant, we interpret pairwise differences for the int
 # Run a post-hoc test for pairwise differences
 TukeyHSD(Litter.anova.2way3)
 
-#run with interaction so tha HSD output is useful
+#run with interaction so that HSD output is useful
 Litter.interaction <- with(Litter, interaction(functionalGroup, nlcdClass))
 Litter.anova.2way5 <- aov(data = Litter, dryMass ~ Litter.interaction)
 
@@ -187,8 +187,8 @@ levels(Litter$functionalGroup)
 Litter.anova.plot <- ggplot(Litter, aes(y = dryMass, x = nlcdClass, color = functionalGroup)) +
   geom_boxplot()+
   scale_y_log10(limits = c(0.01, 120), labels = trans_format("log10", math_format(10^.x)))+
-  labs(x= "NLCD Class", y = "Dry Mass (g)", colr = "Functional group")+
-  stat_summary(aes(x=nlcdClass, y = dryMass, group = functionalGroup), position = position_dodge(0.75), 
+  labs(x= "NLCD Class", y = "Dry Mass (g)", color = "Functional group")+
+  stat_summary(aes(x=nlcdClass, y = dryMass, color = functionalGroup), position = position_dodge(0.75), 
                geom = "text", fun.y = max, vjust = -1, size = 3.5,
                label = c("d", "d", "d", "d", "d", "d", "d", "a",
                           "d", "d", "d", "d", "d", "d", "d", "b",
@@ -196,7 +196,7 @@ Litter.anova.plot <- ggplot(Litter, aes(y = dryMass, x = nlcdClass, color = func
                show.legend = FALSE)+
   scale_color_brewer(type = "qual", palette = 2)
 
-print(Litter.anova.plot)
+print(Litter.anova.plot) #letters are in teh wrong order??
 
 ```
 

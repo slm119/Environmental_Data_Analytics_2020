@@ -33,6 +33,7 @@ getwd()
 library(tidyverse)
 library(cowplot)
 library(agricolae)
+library(scales)
 
 NTL.nutrients.PP <- read.csv("./Data/Processed/NTL-LTER_Lake_Nutrients_PeterPaul_Processed.csv")
 
@@ -63,18 +64,52 @@ Peter Lake was manipulated with additions of nitrogen and phosphorus over the ye
 
 4. Which application of the GLM will you use (t-test, one-way ANOVA, two-way ANOVA with main effects, or two-way ANOVA with interaction effects)? Justify your choice.
 
-> Answer: 
+> Answer: Two-way anova with interactions is needed to assess the differences in mean nutrient level by lake and also by month. An interaction between lake and time of year can also be considered because specific characteristics of the lake (size, depth, lake chemistry, inflows, etc) may result in different seasonal effects on tp and tn, and therefore the effect of season on nutrient concentrations may depend on the lake.  
 
 5. Run your test for TN. Include examination of groupings and consider interaction effects, if relevant.
+
 
 6. Run your test for TP. Include examination of groupings and consider interaction effects, if relevant.
 
 ```{r}
 #5
+#ggplot(data = NTL.nutrients.PP_surface_93to96, aes(x=as.factor(month), y = tn_ug, color = lakename))+
+#  geom_boxplot()
+
+# two-way anova with interaction effect
+tn.anova.int <- aov(data = NTL.nutrients.PP_surface_93to96, tn_ug ~ lakename * month)
+summary(tn.anova.int)
+# interaction is not significant, so remove from the model
+
+# two-way anova with main effects only
+tn.anova.noint <- aov(data = NTL.nutrients.PP_surface_93to96, tn_ug ~ lakename + month)
+summary(tn.anova.noint)
+
+TukeyHSD(tn.anova.noint)
+
+#groups
+tn.anova.lakegroups <- HSD.test(tn.anova.noint, trt = "lakename", group = TRUE)
+tn.anova.lakegroups
+
+#month is not significant, so groups do not depend on month
 
 
 #6
+#ggplot(data = NTL.nutrients.PP_surface_93to96, aes(x=as.factor(month), y = tp_ug, color = lakename))+
+#  geom_boxplot()
 
+tp.anova.int <- aov(data = NTL.nutrients.PP_surface_93to96, tp_ug ~ lakename * month)
+summary(tp.anova.int)
+# lake and interaction are significant, but month on its own is not
+
+TukeyHSD(tp.anova.int)
+
+tp.interaction <- with(NTL.nutrients.PP_surface_93to96, interaction(lakename, month))
+tp.anova.interactionterm <- aov(data = NTL.nutrients.PP_surface_93to96, tp_ug ~ tp.interaction)
+
+# groups with interaction
+tp.anova.groups <- HSD.test(tp.anova.interactionterm, "tp.interaction", group = TRUE)
+tp.anova.groups
 
 ```
 
@@ -83,11 +118,43 @@ Peter Lake was manipulated with additions of nitrogen and phosphorus over the ye
 8. Combine your plots with cowplot, with a common legend at the top and the two graphs stacked vertically. Your x axes should be formatted with the same breaks, such that you can remove the title and text of the top legend and retain just the bottom legend. 
 
 ```{r}
+theme_set(theme_minimal()+
+            theme(legend.position = "top"))
 #7
+TN.plot <- ggplot(NTL.nutrients.PP_surface_93to96, aes(y = tn_ug, x = month, color = lakename)) +
+  geom_boxplot()+
+  scale_y_continuous(limits = c(0,2300))+
+  labs(x= "Month", y = expression("Total N" ~ (mu*g / L)), color = "")+
+  stat_summary(aes(x=month, y = tn_ug), position = position_dodge(0.75), 
+               geom = "text", fun.y = max, vjust = -1, size = 3.5,
+               label = c("b","a", "b", "a","b","a",
+                         "b", "a","b", "a"),
+               show.legend = FALSE)+
+  scale_color_brewer(type = "qual", palette = 2)
+print(TN.plot)
 
+
+TP.plot <- ggplot(NTL.nutrients.PP_surface_93to96, aes(y = tp_ug, x = month, color = lakename)) +
+  geom_boxplot()+
+  scale_y_log10(limits = c(1, 10^4), labels = trans_format("log10", math_format(10^.x)))+
+  labs(x= "Month", y = expression("Total P" ~ (mu*g / L)), color = "")+
+  stat_summary(aes(x=month, y = tn_ug, group = lakename), color = "black", position = position_dodge(.75), 
+               geom = "text", fun.y = max, vjust = -1, size = 3.5,
+               label = c("cd", "bcd", "d", "ab", "d", "a",
+                         "d", "abc", "cd", "abcd"),
+               show.legend = FALSE)+
+  scale_color_brewer(type = "qual", palette = 2)
+print(TP.plot)
 
 #8
+TN.cowplot <- TN.plot +
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank())
+TP.cowplot <- TP.plot +
+  theme(legend.position = "none")+
+  scale_x_discrete(labels = c("May", "Jun", "Jul", "Aug", "Sep"))
 
+plot_grid(TN.cowplot, TP.cowplot, nrow = 2, align = "v", rel_heights = c(1.15, 1))
 ```
 
 
