@@ -120,15 +120,24 @@ tp.anova.groups
 ```{r}
 theme_set(theme_minimal()+
             theme(legend.position = "top"))
+
+### why doesn't it list letters in order from left to right?? this is an annoying default...
+
+
 #7
 TN.plot <- ggplot(NTL.nutrients.PP_surface_93to96, aes(y = tn_ug, x = month, color = lakename)) +
   geom_boxplot()+
   scale_y_continuous(limits = c(0,2300))+
   labs(x= "Month", y = expression("Total N" ~ (mu*g / L)), color = "")+
-  stat_summary(aes(x=month, y = tn_ug), position = position_dodge(0.75), 
+  stat_summary(aes(x=month, y = tn_ug, group = lakename), 
+               color = "black",
+               position = position_dodge(0.75),
                geom = "text", fun.y = max, vjust = -1, size = 3.5,
-               label = c("b","a", "b", "a","b","a",
-                         "b", "a","b", "a"),
+               label = c("a","b",
+                         "a", "b", 
+                         "a","b",
+                         "a","b",
+                         "a","b"),
                show.legend = FALSE)+
   scale_color_brewer(type = "qual", palette = 2)
 print(TN.plot)
@@ -138,10 +147,15 @@ TP.plot <- ggplot(NTL.nutrients.PP_surface_93to96, aes(y = tp_ug, x = month, col
   geom_boxplot()+
   scale_y_log10(limits = c(1, 10^4), labels = trans_format("log10", math_format(10^.x)))+
   labs(x= "Month", y = expression("Total P" ~ (mu*g / L)), color = "")+
-  stat_summary(aes(x=month, y = tn_ug, group = lakename), color = "black", position = position_dodge(.75), 
+  stat_summary(aes(x=month, y = tn_ug, group = lakename), 
+               color = "black", 
+               position = position_dodge(.75), 
                geom = "text", fun.y = max, vjust = -1, size = 3.5,
-               label = c("cd", "bcd", "d", "ab", "d", "a",
-                         "d", "abc", "cd", "abcd"),
+               label = c("bcd", "cd", 
+                         "ab", "d", 
+                         "a", "d",
+                         "abc", "d", 
+                         "abcd", "cd"),
                show.legend = FALSE)+
   scale_color_brewer(type = "qual", palette = 2)
 print(TP.plot)

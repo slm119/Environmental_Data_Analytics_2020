@@ -573,16 +573,24 @@ the lake.
 \begin{Highlighting}[]
 \KeywordTok{theme_set}\NormalTok{(}\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}
 \StringTok{            }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"top"}\NormalTok{))}
+
+\CommentTok{### why doesn't it list letters in order from left to right?? this is an annoying default...}
+
+
 \CommentTok{#7}
 \NormalTok{TN.plot <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(NTL.nutrients.PP_surface_93to96, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{y =}\NormalTok{ tn_ug, }\DataTypeTok{x =}\NormalTok{ month, }\DataTypeTok{color =}\NormalTok{ lakename)) }\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{()}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_continuous}\NormalTok{(}\DataTypeTok{limits =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{2300}\NormalTok{))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=} \StringTok{"Month"}\NormalTok{, }\DataTypeTok{y =} \KeywordTok{expression}\NormalTok{(}\StringTok{"Total N"} \OperatorTok{~}\StringTok{ }\NormalTok{(mu}\OperatorTok{*}\NormalTok{g }\OperatorTok{/}\StringTok{ }\NormalTok{L)), }\DataTypeTok{color =} \StringTok{""}\NormalTok{)}\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{month, }\DataTypeTok{y =}\NormalTok{ tn_ug, }\DataTypeTok{group =}\NormalTok{ lakename), }\DataTypeTok{color =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.75}\NormalTok{), }
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{month, }\DataTypeTok{y =}\NormalTok{ tn_ug, }\DataTypeTok{group =}\NormalTok{ lakename), }
+               \DataTypeTok{color =} \StringTok{"black"}\NormalTok{,}
+               \DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\FloatTok{0.75}\NormalTok{),}
                \DataTypeTok{geom =} \StringTok{"text"}\NormalTok{, }\DataTypeTok{fun.y =}\NormalTok{ max, }\DataTypeTok{vjust =} \DecValTok{-1}\NormalTok{, }\DataTypeTok{size =} \FloatTok{3.5}\NormalTok{,}
-               \DataTypeTok{label =} \KeywordTok{c}\NormalTok{(}\StringTok{"b"}\NormalTok{, }\StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{,}\StringTok{"a"}\NormalTok{,}
-                         \StringTok{"b"}\NormalTok{, }\StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{, }\StringTok{"a"}
-\NormalTok{                         ,}\StringTok{"b"}\NormalTok{, }\StringTok{"a"}\NormalTok{),}
+               \DataTypeTok{label =} \KeywordTok{c}\NormalTok{(}\StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{,}
+                         \StringTok{"a"}\NormalTok{, }\StringTok{"b"}\NormalTok{, }
+                         \StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{,}
+                         \StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{,}
+                         \StringTok{"a"}\NormalTok{,}\StringTok{"b"}\NormalTok{),}
                \DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}\DataTypeTok{type =} \StringTok{"qual"}\NormalTok{, }\DataTypeTok{palette =} \DecValTok{2}\NormalTok{)}
 \KeywordTok{print}\NormalTok{(TN.plot)}
@@ -605,10 +613,15 @@ the lake.
 \StringTok{  }\KeywordTok{geom_boxplot}\NormalTok{()}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_y_log10}\NormalTok{(}\DataTypeTok{limits =} \KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{10}\OperatorTok{^}\DecValTok{4}\NormalTok{), }\DataTypeTok{labels =} \KeywordTok{trans_format}\NormalTok{(}\StringTok{"log10"}\NormalTok{, }\KeywordTok{math_format}\NormalTok{(}\DecValTok{10}\OperatorTok{^}\NormalTok{.x)))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=} \StringTok{"Month"}\NormalTok{, }\DataTypeTok{y =} \KeywordTok{expression}\NormalTok{(}\StringTok{"Total P"} \OperatorTok{~}\StringTok{ }\NormalTok{(mu}\OperatorTok{*}\NormalTok{g }\OperatorTok{/}\StringTok{ }\NormalTok{L)), }\DataTypeTok{color =} \StringTok{""}\NormalTok{)}\OperatorTok{+}
-\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{month, }\DataTypeTok{y =}\NormalTok{ tn_ug, }\DataTypeTok{group =}\NormalTok{ lakename), }\DataTypeTok{color =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(}\DecValTok{1}\NormalTok{), }
+\StringTok{  }\KeywordTok{stat_summary}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{month, }\DataTypeTok{y =}\NormalTok{ tn_ug, }\DataTypeTok{group =}\NormalTok{ lakename), }
+               \DataTypeTok{color =} \StringTok{"black"}\NormalTok{, }
+               \DataTypeTok{position =} \KeywordTok{position_dodge}\NormalTok{(.}\DecValTok{75}\NormalTok{), }
                \DataTypeTok{geom =} \StringTok{"text"}\NormalTok{, }\DataTypeTok{fun.y =}\NormalTok{ max, }\DataTypeTok{vjust =} \DecValTok{-1}\NormalTok{, }\DataTypeTok{size =} \FloatTok{3.5}\NormalTok{,}
-               \DataTypeTok{label =} \KeywordTok{c}\NormalTok{(}\StringTok{"cd"}\NormalTok{, }\StringTok{"bcd"}\NormalTok{, }\StringTok{"d"}\NormalTok{, }\StringTok{"ab"}\NormalTok{, }\StringTok{"d"}\NormalTok{, }\StringTok{"a"}\NormalTok{,}
-                         \StringTok{"d"}\NormalTok{, }\StringTok{"abc"}\NormalTok{, }\StringTok{"cd"}\NormalTok{, }\StringTok{"abcd"}\NormalTok{),}
+               \DataTypeTok{label =} \KeywordTok{c}\NormalTok{(}\StringTok{"bcd"}\NormalTok{, }\StringTok{"cd"}\NormalTok{, }
+                         \StringTok{"ab"}\NormalTok{, }\StringTok{"d"}\NormalTok{, }
+                         \StringTok{"a"}\NormalTok{, }\StringTok{"d"}\NormalTok{,}
+                         \StringTok{"abc"}\NormalTok{, }\StringTok{"d"}\NormalTok{, }
+                         \StringTok{"abcd"}\NormalTok{, }\StringTok{"cd"}\NormalTok{),}
                \DataTypeTok{show.legend =} \OtherTok{FALSE}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_brewer}\NormalTok{(}\DataTypeTok{type =} \StringTok{"qual"}\NormalTok{, }\DataTypeTok{palette =} \DecValTok{2}\NormalTok{)}
 \KeywordTok{print}\NormalTok{(TP.plot)}
