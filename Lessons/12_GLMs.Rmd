@@ -190,3 +190,5 @@ TPmodel <- lm(data = Paul.naomit, tp_ug ~ dissolvedOxygen + temperature_C + tn_u
 summary(TPmodel)
 
 ```
+
+DO and temp were found to be significant predictors of total P in paul lake and total nitrogen was not significant but did improve the predictive power of the model and so was left in the model. for each unit increa in DO, to decreases by 0.83 ug others held constant. a one degree increase in temp was associated with a .48 ug decrease in tp
