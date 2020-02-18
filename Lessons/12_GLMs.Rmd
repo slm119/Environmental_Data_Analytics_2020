@@ -17,7 +17,7 @@ editor_options:
 ```{r, message = FALSE}
 getwd()
 library(tidyverse)
-options(scipen = 4)
+options(scipen = 4) # tells it to display 4 sigfigs
 
 PeterPaul.chem.nutrients <- read.csv("./Data/Processed/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv")
 
@@ -51,12 +51,12 @@ irradiance.regression <- lm(PeterPaul.chem.nutrients$irradianceWater ~ PeterPaul
 irradiance.regression <- lm(data = PeterPaul.chem.nutrients, irradianceWater ~ depth)
 summary(irradiance.regression)
 
-# Correlation
+# Correlation - correlation squared = Rsquared (adj)
 cor.test(PeterPaul.chem.nutrients$irradianceWater, PeterPaul.chem.nutrients$depth)
 ```
 Question: How would you report the results of this test (overall findings and report of statistical output)?
 
->  
+>  Irradiance decreases significantly as depth increases (linear regression; R2 = 0.31, F(1,15449) = 6912, p < 0.0001). For each 1 meter increase in depth, irradiance decreases by 96 (units)
 
 So, we see there is a significant negative correlation between irradiance and depth (lower light levels at greater depths), and that this model explains about 31 % of the total variance in irradiance. Let's visualize this relationship and the model itself. 
 
@@ -71,9 +71,9 @@ An exploratory option to visualize the model fit is to use the function `plot`. 
 4. **Residuals vs. Leverage.** This graph will display potential outliers. The values that fall outside the dashed red lines (Cook's distance) are outliers for the model. Watch for drastic departures of the solid red line from horizontal - this is a sign of a poor model fit.
 
 ```{r, fig.height = 3, fig.width = 4}
-par(mfrow = c(2,2), mar=c(1,1,1,1))
+par(mfrow = c(2,2), mar=c(1,1,1,1)) #"mar" allows us to print these plots correctly
 plot(irradiance.regression)
-par(mfrow = c(1,1))
+par(mfrow = c(1,1)) # this resets the par(mfrow) option to show one by one
 ```
 
 The option best suited for communicating findings is to plot the explanatory and response variables as a scatterplot. 
@@ -82,7 +82,7 @@ The option best suited for communicating findings is to plot the explanatory and
 # Plot the regression
 irradiancebydepth <- 
   ggplot(PeterPaul.chem.nutrients, aes(x = depth, y = irradianceWater)) +
-  #ylim(0, 2000) +
+  ylim(0, 2000) +
   geom_point() 
 print(irradiancebydepth) 
 ```
@@ -91,11 +91,12 @@ Given the distribution of irradiance values, we don't have a linear relationship
 
 ```{r, fig.height = 3, fig.width = 4}
 PeterPaul.chem.nutrients <- filter(PeterPaul.chem.nutrients, 
-                                   irradianceWater != 0 & irradianceWater < 5000)
-irradiance.regression2 <- lm(data = PeterPaul.chem.nutrients, log(irradianceWater) ~ depth)
+                                   irradianceWater != 0 & irradianceWater < 5000) # remove outlier point, and when irradiance = 0, log transformation will cause an error when the variable equals zero, in this case there are only 3 rows where irradiance is equal to 0 so we will just remove these from the data 
+irradiance.regression2 <- lm(data = PeterPaul.chem.nutrients, log(irradianceWater) ~ depth) 
 summary(irradiance.regression2)
-
-par(mfrow = c(2,2), mar=c(1,1,1,1))
+ 
+#check model fit
+par(mfrow = c(2,2), mar=c(1,1,1,1)) # tell R to show all four model fit plots at once
 plot(irradiance.regression2)
 par(mfrow = c(1,1))
 
@@ -117,6 +118,14 @@ print(irradiancebydepth2)
 
 # Make the graph attractive
 
+irradiancebydepth2 <- 
+    ggplot(PeterPaul.chem.nutrients, aes(x = depth, y = irradianceWater)) +
+    geom_point(pch = 1, color = "darkorange1") +
+    scale_y_log10() +
+    geom_smooth(method = 'lm', se = FALSE, color = "black", size = .7, linetype = "dashed")+
+  labs(x="Depth (m)", y ="Irradiance in water")
+print(irradiancebydepth2)
+
 ```
 
 ## Non-parametric equivalent: Spearman's Rho
@@ -131,6 +140,7 @@ cor.test(PeterPaul.chem.nutrients$irradianceWater, PeterPaul.chem.nutrients$dept
 It is possible, and often useful, to consider multiple continuous explanatory variables at a time in a linear regression. For example, total phosphorus concentration in Paul Lake (the unfertilized lake) could be dependent on depth and dissolved oxygen concentration: 
 
 ``` {r, fig.height = 3, fig.width = 4}
+# regression for the reference lake, paul lake
 TPregression <- lm(data = subset(PeterPaul.chem.nutrients, lakename == "Paul Lake"), 
                    tp_ug ~ depth + dissolvedOxygen)
 summary(TPregression)
@@ -139,7 +149,7 @@ TPplot <- ggplot(subset(PeterPaul.chem.nutrients, lakename == "Paul Lake"),
                  aes(x = dissolvedOxygen, y = tp_ug, color = depth)) +
   geom_point() +
   xlim(0, 20)
-print(TPplot)
+print(TPplot) # not a great visualization for showing the regression relationship, but the linreg model is pretty good
 
 par(mfrow = c(2,2), mar=c(1,1,1,1))
 plot(TPregression)
@@ -156,10 +166,10 @@ library(corrplot)
 PeterPaulnutrients <- 
   PeterPaul.chem.nutrients %>%
   select(tn_ug:po4) %>%
-  na.omit()
+  na.omit() # need to leave out na's before running corplot
 PeterPaulCorr <- cor(PeterPaulnutrients)
 corrplot(PeterPaulCorr, method = "ellipse")
-corrplot.mixed(PeterPaulCorr, upper = "ellipse")
+corrplot.mixed(PeterPaulCorr, upper = "ellipse") # upper is ellipse, lower shows correlation coef
 ```
 
 ## AIC to select variables
@@ -175,7 +185,7 @@ Paul.naomit <- PeterPaul.chem.nutrients %>%
 
 TPAIC <- lm(data = Paul.naomit, tp_ug ~ depth + dissolvedOxygen + 
               temperature_C + tn_ug + po4)
-step(TPAIC)
+step(TPAIC) #stepwise AIC to get to most parsimonious model
 TPmodel <- lm(data = Paul.naomit, tp_ug ~ dissolvedOxygen + temperature_C + tn_ug)
 summary(TPmodel)
 

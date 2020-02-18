@@ -34,7 +34,7 @@ mainfont: Times New Roman
 
 
 # Rationale and Research Questions
-
+regression of environmental data to predict coral bleaching observations
 
 
 \newpage
