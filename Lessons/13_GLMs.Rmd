@@ -44,16 +44,24 @@ Let's say we wanted to predict total nitrogen concentrations by depth and by lak
 ```{r, fig.height = 3, fig.width = 4}
 # main effects
 TNancova.main <- lm(data = PeterPaul.chem.nutrients, tn_ug ~ lakename + depth)
-summary(TNancova.main)
+summary(TNancova.main) # intercept is Paul lake, the alpha and betas are both listed in the same "estimate" column
+
 
 # interaction effects
 TNancova.interaction <- lm(data = PeterPaul.chem.nutrients, tn_ug ~ lakename * depth)
 summary(TNancova.interaction)
+# interaction is significant which means that the effect of depth depends on the lake name, so the interaction 
+# intercept is paul lake and depth = 0
+# lakename peter lake - intercept add the estimate to the the alpha for lakename Peter Lake 228+161
+# depth is a beta slope for paul lake 90.89
+# lakename Peter:depth - slope is 90.894-35.156
 
 TNplot <- ggplot(PeterPaul.chem.nutrients, aes(x = depth, y = tn_ug, color = lakename)) + 
-  geom_point() + 
+  geom_point(alpha = .5) + 
   geom_smooth(method = "lm", se = FALSE) +
-  xlim(0, 10)
+  xlim(0, 10)+
+  labs(x="Depth (m)", y = expression(TN~(mu*g/L)))+
+  scale_color_manual(values = c("darkblue", "darkturquoise"))
 print(TNplot)
 
 # Make the graph attractive
@@ -101,7 +109,7 @@ Next, we will build a hierarchical model. We will use the package `nlme` for our
 ```{r}
 TempTest.mixed <- lme(data = NTL.summertemp,
                      temperature_C ~ year4, 
-                     random = ~1|lakename)
+                     random = ~1|lakename) # random effect is lakename 
 summary(TempTest.mixed)
 rsquared(TempTest.mixed)
 
@@ -121,10 +129,10 @@ ggplot(NTL.summertemp, aes(x = year4, y = temperature_C, color = lakename)) +
   geom_abline(intercept = -97.72, slope = 0.06) +
   # make it look better
   labs(x = "", y = expression("Temperature " ( degree~C)), color = "") +
-  theme(legend.spacing.x = unit(0, "cm"))
+  theme(legend.spacing.x = unit(0, "cm")) # squished legend lables closer together
 print(NTL.tempmodel)
 ```
 
 Question: How would you interpret the collective results of your mixed effects model in the context of the study question?
 
-> ANSWER: 
+> ANSWER: the mixed effects model showed that there is a significant increase in lake surface temperatures over the study period when accounting for variability by lake. 

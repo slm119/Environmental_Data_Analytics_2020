@@ -1,6 +1,6 @@
 ---
 title: "Assignment 7: GLMs week 2 (Linear Regression and beyond)"
-author: "Student Name"
+author: "Sena McCrory"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -27,9 +27,17 @@ The completed exercise is due on Tuesday, February 25 at 1:00 pm.
 
 ```{r}
 #1
+getwd()
+library(tidyverse)
+library(nlme)
+library(piecewiseSEM)
 
-
+ntl_lter.data <- read.csv("./Data/Raw/NTL-LTER_Lake_ChemistryPhysics_Raw.csv")
+litter.data <- read.csv("./Data/Processed/NEON_NIWO_Litter_mass_trap_Processed.csv")
 #2
+my.theme <- theme_minimal()+
+  theme(legend.position = "top")
+theme_set(my.theme)
 
 ```
 
