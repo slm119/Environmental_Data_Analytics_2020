@@ -92,9 +92,10 @@ summary(ntl_intancova)
 #8
 ntl_july_fig1 <- ggplot(data = ntl_lter.july, aes(x = depth, y = temperature_C))+
   geom_point(aes(color = lakename), alpha = 0.5)+
-  scale_color_viridis_d(option = "magma", begin = .1, end = .9)+
+  scale_color_viridis_d(option = "plasma", begin = .05, end = .9)+
   labs(x = "Depth (m)", y = "Temp (deg C)", color = "")+
-  ylim(0,30)
+  ylim(0,35)+
+  geom_smooth(aes(color= lakename), method = "lm", se = FALSE)
 print(ntl_july_fig1)
 ```
 
@@ -104,21 +105,27 @@ a. Build and run a mixed effects model.
 b. Check the difference between the marginal and conditional R2 of the model. 
 
 ```{r}
-
-
+litter.mixed <- lme(data = litter.data, dryMass ~ nlcdClass * functionalGroup, random = ~1|plotID )
+summary(litter.mixed)
+rsquared(litter.mixed) # which one is the rsquared?? conditional or marginal??
 ```
 
 b. continued... How much more variance is explained by adding the random effect to the model? 
 
-> Answer: 2 %
+> Answer: about 2 % more variance is explained by including the random effect
+(difference between the marginal and conditional r squared)
 
 c. Run the same model without the random effect.
 d. Run an anova on the two tests. 
 ```{r}
- 
+ # 9c.
+litter.fixed <- lm(data = litter.data, dryMass ~ nlcdClass * functionalGroup)
+summary(litter.fixed)
+
+anova(litter.mixed, litter.fixed)
 
 ```
 
 d. continued... Is the mixed effects model a better model than the fixed effects model? How do you know?
 
-> Answer: 
+> Answer: the mixed model is better because the aic score is lower
