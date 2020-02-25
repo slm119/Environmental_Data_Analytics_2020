@@ -128,4 +128,4 @@ anova(litter.mixed, litter.fixed)
 
 d. continued... Is the mixed effects model a better model than the fixed effects model? How do you know?
 
-> Answer: the mixed model is better because the aic score is lower
+> Answer: the mixed model is better because the AIC score is lower
