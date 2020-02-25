@@ -170,7 +170,7 @@ The completed exercise is due on Tuesday, February 25 at 1:00 pm.
 \end{Shaded}
 
 \begin{verbatim}
-## -- Attaching packages --------------------- tidyverse 1.3.0 --
+## -- Attaching packages -------------------------------- tidyverse 1.3.0 --
 \end{verbatim}
 
 \begin{verbatim}
@@ -181,7 +181,7 @@ The completed exercise is due on Tuesday, February 25 at 1:00 pm.
 \end{verbatim}
 
 \begin{verbatim}
-## -- Conflicts ------------------------ tidyverse_conflicts() --
+## -- Conflicts ----------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 \end{verbatim}
@@ -284,38 +284,30 @@ Lakes LTER?
 \StringTok{  }\KeywordTok{na.exclude}\NormalTok{()}
 
 \CommentTok{#4}
-\NormalTok{ntl_AIC <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(temperature_C }\OperatorTok{~}\StringTok{ }\NormalTok{lakename }\OperatorTok{+}\StringTok{ }\NormalTok{year4 }\OperatorTok{+}\StringTok{ }\NormalTok{daynum }\OperatorTok{+}\StringTok{ }\NormalTok{depth, }\DataTypeTok{data =}\NormalTok{ ntl_lter.july)}
+\NormalTok{ntl_AIC <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(temperature_C }\OperatorTok{~}\StringTok{ }\NormalTok{year4 }\OperatorTok{+}\StringTok{ }\NormalTok{daynum }\OperatorTok{+}\StringTok{ }\NormalTok{depth, }\DataTypeTok{data =}\NormalTok{ ntl_lter.july)}
 \KeywordTok{step}\NormalTok{(ntl_AIC)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## Start:  AIC=24461.34
-## temperature_C ~ lakename + year4 + daynum + depth
+## Start:  AIC=26016.31
+## temperature_C ~ year4 + daynum + depth
 ## 
-##            Df Sum of Sq    RSS   AIC
-## <none>                  120062 24461
-## - year4     1       184 120245 24474
-## - daynum    1      1346 121407 24568
-## - lakename  8     21056 141118 26016
-## - depth     1    403139 523201 38770
+##          Df Sum of Sq    RSS   AIC
+## <none>                141118 26016
+## - year4   1        80 141198 26020
+## - daynum  1      1333 142450 26106
+## - depth   1    403925 545042 39151
 \end{verbatim}
 
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = temperature_C ~ lakename + year4 + daynum + depth, 
-##     data = ntl_lter.july)
+## lm(formula = temperature_C ~ year4 + daynum + depth, data = ntl_lter.july)
 ## 
 ## Coefficients:
-##              (Intercept)     lakenameCrampton Lake    lakenameEast Long Lake  
-##                 45.17306                   4.71362                  -1.46041  
-## lakenameHummingbird Lake         lakenamePaul Lake        lakenamePeter Lake  
-##                 -4.73042                   0.99422                   1.44048  
-##     lakenameTuesday Lake         lakenameWard Lake    lakenameWest Long Lake  
-##                 -1.38445                  -0.46590                  -0.16847  
-##                    year4                    daynum                     depth  
-##                 -0.01588                   0.04157                  -1.96540
+## (Intercept)        year4       daynum        depth  
+##    -6.45556      0.01013      0.04134     -1.94726
 \end{verbatim}
 
 \begin{Shaded}
@@ -328,33 +320,24 @@ Lakes LTER?
 \begin{verbatim}
 ## 
 ## Call:
-## lm(formula = temperature_C ~ lakename + year4 + daynum + depth, 
-##     data = ntl_lter.july)
+## lm(formula = temperature_C ~ year4 + daynum + depth, data = ntl_lter.july)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -7.8938 -3.0274 -0.2114  2.7781 15.2926 
+## -9.6517 -2.9937  0.0855  2.9692 13.6171 
 ## 
 ## Coefficients:
-##                           Estimate Std. Error  t value Pr(>|t|)    
-## (Intercept)              45.173063   8.248578    5.476 4.45e-08 ***
-## lakenameCrampton Lake     4.713617   0.382185   12.333  < 2e-16 ***
-## lakenameEast Long Lake   -1.460406   0.343271   -4.254 2.12e-05 ***
-## lakenameHummingbird Lake -4.730421   0.459795  -10.288  < 2e-16 ***
-## lakenamePaul Lake         0.994222   0.331643    2.998 0.002726 ** 
-## lakenamePeter Lake        1.440479   0.331406    4.347 1.40e-05 ***
-## lakenameTuesday Lake     -1.384450   0.336476   -4.115 3.91e-05 ***
-## lakenameWard Lake        -0.465900   0.464619   -1.003 0.316003    
-## lakenameWest Long Lake   -0.168474   0.341961   -0.493 0.622257    
-## year4                    -0.015885   0.004118   -3.857 0.000115 ***
-## daynum                    0.041574   0.003985   10.432  < 2e-16 ***
-## depth                    -1.965403   0.010885 -180.566  < 2e-16 ***
+##              Estimate Std. Error  t value Pr(>|t|)    
+## (Intercept) -6.455560   8.638808   -0.747   0.4549    
+## year4        0.010131   0.004303    2.354   0.0186 *  
+## daynum       0.041336   0.004315    9.580   <2e-16 ***
+## depth       -1.947264   0.011676 -166.782   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 3.516 on 9710 degrees of freedom
-## Multiple R-squared:  0.7803, Adjusted R-squared:   0.78 
-## F-statistic:  3135 on 11 and 9710 DF,  p-value: < 2.2e-16
+## Residual standard error: 3.811 on 9718 degrees of freedom
+## Multiple R-squared:  0.7417, Adjusted R-squared:  0.7417 
+## F-statistic:  9303 on 3 and 9718 DF,  p-value: < 2.2e-16
 \end{verbatim}
 
 \begin{enumerate}
@@ -369,7 +352,7 @@ Lakes LTER?
 
 \begin{quote}
 Answer: Lake, year, day of the month, and depth are all significant
-predictors of lake temperatures in July. This model explains 78.0\% of
+predictors of lake temperatures in July. This model explains 74.17\% of
 the variation in the data.
 \end{quote}
 
@@ -459,7 +442,7 @@ This interaction explains 78.6 \% of the variation in the data.
 \NormalTok{ntl_july_fig1 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ ntl_lter.july, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ depth, }\DataTypeTok{y =}\NormalTok{ temperature_C))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ lakename), }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{option =} \StringTok{"plasma"}\NormalTok{, }\DataTypeTok{begin =} \FloatTok{.05}\NormalTok{, }\DataTypeTok{end =} \FloatTok{.9}\NormalTok{)}\OperatorTok{+}
-\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Depth (m)"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Temp (deg C)"}\NormalTok{, }\DataTypeTok{color =} \StringTok{""}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Depth (m)"}\NormalTok{, }\DataTypeTok{y =} \KeywordTok{expression}\NormalTok{(}\StringTok{"Temp ("}\OperatorTok{*}\ErrorTok{~}\NormalTok{degree}\OperatorTok{*}\NormalTok{C}\OperatorTok{*}\StringTok{")"}\NormalTok{), }\DataTypeTok{color =} \StringTok{""}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{ylim}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{35}\NormalTok{)}\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_smooth}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color=}\NormalTok{ lakename), }\DataTypeTok{method =} \StringTok{"lm"}\NormalTok{, }\DataTypeTok{se =} \OtherTok{FALSE}\NormalTok{)}
 \KeywordTok{print}\NormalTok{(ntl_july_fig1)}
@@ -794,7 +777,7 @@ This interaction explains 78.6 \% of the variation in the data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{rsquared}\NormalTok{(litter.mixed) }\CommentTok{# which one is the rsquared?? conditional or marginal??}
+\KeywordTok{rsquared}\NormalTok{(litter.mixed)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -814,7 +797,7 @@ This interaction explains 78.6 \% of the variation in the data.
 
 \begin{quote}
 Answer: about 2 \% more variance is explained by including the random
-effect (difference between the marginal and conditional r squared)
+effect (difference between the conditional and marginal r squared)
 \end{quote}
 
 \begin{enumerate}
@@ -925,7 +908,7 @@ effect (difference between the marginal and conditional r squared)
 \end{enumerate}
 
 \begin{quote}
-Answer: the mixed model is better because the AIC score is lower
+Answer: the mixed model is better because it has a lower AIC score.
 \end{quote}
 
 \end{document}
