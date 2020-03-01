@@ -1,0 +1,569 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Assignment 8: Time Series Analysis},
+  pdfauthor={Sena McCrory},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=2.54cm]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Assignment 8: Time Series Analysis}
+\author{Sena McCrory}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{overview}{%
+\subsection{OVERVIEW}\label{overview}}
+
+This exercise accompanies the lessons in Environmental Data Analytics on
+time series analysis.
+
+\hypertarget{directions}{%
+\subsection{Directions}\label{directions}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Change ``Student Name'' on line 3 (above) with your name.
+\item
+  Work through the steps, \textbf{creating code and output} that fulfill
+  each instruction.
+\item
+  Be sure to \textbf{answer the questions} in this assignment document.
+\item
+  When you have completed the assignment, \textbf{Knit} the text and
+  code into a single PDF file.
+\item
+  After Knitting, submit the completed exercise (PDF file) to the
+  dropbox in Sakai. Add your last name into the file name (e.g.,
+  ``Salk\_A06\_GLMs\_Week1.Rmd'') prior to submission.
+\end{enumerate}
+
+The completed exercise is due on Tuesday, March 3 at 1:00 pm.
+
+\hypertarget{set-up}{%
+\subsection{Set up}\label{set-up}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Set up your session:
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Check your working directory
+\item
+  Load the tidyverse, lubridate, zoo, and trend packages
+\item
+  Set your ggplot theme
+\item
+  Import the ten datasets from the Ozone\_TimeSeries folder in the Raw
+  data folder. These contain ozone concentrations at Garinger High
+  School in North Carolina from 2010-2019 (the EPA air database only
+  allows downloads for one year at a time). Call these
+  GaringerOzone201*, with the star filled in with the appropriate year
+  in each of ten cases.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{getwd}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "C:/Users/senam/Box Sync/My Documents/MEM classes/Duke Spring 2020/DataAnalytics/Environmental_Data_Analytics_2020"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(lubridate)}
+\KeywordTok{library}\NormalTok{(zoo)}
+\KeywordTok{library}\NormalTok{(trend)}
+\KeywordTok{library}\NormalTok{(scales)}
+
+\NormalTok{my.theme <-}\StringTok{ }\KeywordTok{theme_minimal}\NormalTok{()}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme}\NormalTok{(}\DataTypeTok{legend.position =} \StringTok{"top"}\NormalTok{)}
+\KeywordTok{theme_set}\NormalTok{(my.theme)}
+
+\CommentTok{# read in and bind rows}
+\NormalTok{ozone.files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\DataTypeTok{path =} \StringTok{"./Data/Raw/Ozone_TimeSeries"}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{"*.csv"}\NormalTok{, }\DataTypeTok{full.names =}\NormalTok{ T)}
+\NormalTok{GaringerOzone <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(ozone.files, read.csv, }\DataTypeTok{simplify=}\OtherTok{FALSE}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{bind_rows}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+## into character vector
+\end{verbatim}
+
+\hypertarget{wrangle}{%
+\subsection{Wrangle}\label{wrangle}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  Combine your ten datasets into one dataset called GaringerOzone. Think
+  about whether you should use a join or a row bind.
+\item
+  Set your date column as a date class.
+\item
+  Wrangle your dataset so that it only contains the columns Date,
+  Daily.Max.8.hour.Ozone.Concentration, and DAILY\_AQI\_VALUE.
+\item
+  Notice there are a few days in each year that are missing ozone
+  concentrations. We want to generate a daily dataset, so we will need
+  to fill in any missing days with NA. Create a new data frame that
+  contains a sequence of dates from 2010-01-01 to 2019-12-13 (hint:
+  \texttt{as.data.frame(seq())}). Call this new data frame Days. Rename
+  the column name in Days to ``Date''.
+\item
+  Use a \texttt{left\_join} to comine the data frames. Specify the
+  correct order of data frames within this function so that the final
+  dimensions are 3652 rows and 3 columns. Call your combined data frame
+  GaringerOzone.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 2 }
+\CommentTok{# see above, found more efficient way to do this}
+
+\CommentTok{# 3}
+\CommentTok{# for some reason this line is causing a knit error??}
+\NormalTok{GaringerOzone}\OperatorTok{$}\NormalTok{Date <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\DataTypeTok{x=}\NormalTok{GaringerOzone}\OperatorTok{$}\NormalTok{Date, }\DataTypeTok{format =} \StringTok{"%m/%d/%Y"}\NormalTok{)}
+
+
+\CommentTok{# 4}
+\NormalTok{GaringerOzone <-}\StringTok{ }\KeywordTok{select}\NormalTok{(GaringerOzone, }\KeywordTok{c}\NormalTok{(Date, Daily.Max.}\FloatTok{8.}\NormalTok{hour.Ozone.Concentration, DAILY_AQI_VALUE))}
+\KeywordTok{summary}\NormalTok{(GaringerOzone}\OperatorTok{$}\NormalTok{DAILY_AQI_VALUE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    2.00   30.00   38.00   41.57   47.00  169.00
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 5}
+\NormalTok{Days <-}\StringTok{ }\KeywordTok{as.data.frame}\NormalTok{(}\KeywordTok{seq}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(}\StringTok{"2010-01-01"}\NormalTok{),}\KeywordTok{as.Date}\NormalTok{(}\StringTok{"2019-12-31"}\NormalTok{), }\StringTok{"day"}\NormalTok{)) }
+\KeywordTok{colnames}\NormalTok{(Days)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "seq(as.Date(\"2010-01-01\"), as.Date(\"2019-12-31\"), \"day\")"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Days <-}\StringTok{ }\NormalTok{Days }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{Date =} \StringTok{'seq(as.Date(}\CharTok{\textbackslash{}"}\StringTok{2010-01-01}\CharTok{\textbackslash{}"}\StringTok{), as.Date(}\CharTok{\textbackslash{}"}\StringTok{2019-12-31}\CharTok{\textbackslash{}"}\StringTok{), }\CharTok{\textbackslash{}"}\StringTok{day}\CharTok{\textbackslash{}"}\StringTok{)'}\NormalTok{) }
+\KeywordTok{class}\NormalTok{(Days}\OperatorTok{$}\NormalTok{Date)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Date"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 6}
+\NormalTok{GaringerOzone <-}\StringTok{ }\KeywordTok{left_join}\NormalTok{(Days,GaringerOzone, }\DataTypeTok{by =} \StringTok{"Date"}\NormalTok{)}
+
+\KeywordTok{dim}\NormalTok{(GaringerOzone) }\CommentTok{# hooray!}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 3652    3
+\end{verbatim}
+
+\hypertarget{visualize}{%
+\subsection{Visualize}\label{visualize}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Create a ggplot depicting ozone concentrations over time. In this
+  case, we will plot actual concentrations in ppm, not AQI values.
+  Format your axes accordingly.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(GaringerOzone, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{as.Date}\NormalTok{(Date), }\DataTypeTok{y =}\NormalTok{ Daily.Max.}\FloatTok{8.}\NormalTok{hour.Ozone.Concentration))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightgray"}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{color =} \StringTok{"cadetblue"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=} \StringTok{""}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Ozone Daily 8 hr Max (ppm)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: Removed 63 rows containing missing values (geom_point).
+\end{verbatim}
+
+\includegraphics{A08_TimeSeries_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+\hypertarget{time-series-analysis}{%
+\subsection{Time Series Analysis}\label{time-series-analysis}}
+
+Study question: Have ozone concentrations changed over the 2010s at this
+station?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{7}
+\tightlist
+\item
+  Use a linear interpolation to fill in missing daily data for ozone
+  concentration. Why didn't we use a piecewise constant or spline
+  interpolation?
+\end{enumerate}
+
+\begin{quote}
+Answer: Ozone concentrations are likely to have some temporal
+autocorrelation and so the missing value on one day is likely to be
+related to the values the day before or the day after - a linear
+interpolation is therefore a better option than a piecewise constant
+interpolation which would simply assign the same value as the closest
+day which would be a less accurate estimate than linear interpolation. A
+spline approach could also have been used in this case if we were
+concerned that that high variability (lots of high highs or low lows)
+could lead to unrealistic interpolated values if using a linear
+approach. A higher order spline interpolation could help prevent
+unusually high or low values from affecting interpolated values as
+much.In this case, a simpler linear (0 order) approach does the job.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{8}
+\item
+  Create a new data frame called GaringerOzone.monthly that contains
+  aggregated data: mean ozone concentrations for each month. In your
+  pipe, you will need to first add columns for year and month to form
+  the groupings. In a separate line of code, create a new Date column
+  with each month-year combination being set as the first day of the
+  month (this is for graphing purposes only)
+\item
+  Generate a time series called GaringerOzone.monthly.ts, with a monthly
+  frequency that specifies the correct start and end dates.
+\item
+  Run a time series analysis. In this case the seasonal Mann-Kendall is
+  most appropriate; why is this?
+\end{enumerate}
+
+\begin{quote}
+Answer: The plot we created in part 7 shows that there seems to be a
+seasonal pattern in the data, and so a seasonal Mann-Kendall should be
+used. Also, Mann Kendall is a non-paramentric test and so there is no
+assumption that our data follows a normal distribution.
+\end{quote}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{11}
+\item
+  To figure out the slope of the trend, run the function
+  \texttt{sea.sens.slope} on the time series dataset.
+\item
+  Create a plot depicting mean monthly ozone concentrations over time,
+  with both a geom\_point and a geom\_line layer. No need to add a line
+  for the seasonal Sen's slope; this is difficult to apply to a graph
+  with time as the x axis. Edit your axis labels accordingly.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 8}
+\NormalTok{GaringerOzone}\OperatorTok{$}\NormalTok{Daily.Max.}\FloatTok{8.}\NormalTok{hour.Ozone.Concentration <-}\StringTok{ }\KeywordTok{na.approx}\NormalTok{(GaringerOzone}\OperatorTok{$}\NormalTok{Daily.Max.}\FloatTok{8.}\NormalTok{hour.Ozone.Concentration)}
+
+
+\KeywordTok{summary}\NormalTok{(GaringerOzone}\OperatorTok{$}\NormalTok{Daily.Max.}\FloatTok{8.}\NormalTok{hour.Ozone.Concentration)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## 0.00200 0.03200 0.04100 0.04151 0.05100 0.09300
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 9}
+\NormalTok{GaringerOzone.monthly <-}\StringTok{ }\NormalTok{GaringerOzone }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}
+    \DataTypeTok{Month =} \KeywordTok{month}\NormalTok{(Date),}
+    \DataTypeTok{Year =} \KeywordTok{year}\NormalTok{(Date)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(Year, Month)}\OperatorTok{%>%}
+\StringTok{  }\NormalTok{dplyr }\OperatorTok{::}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}
+    \DataTypeTok{monthly.mean.max8hr.ozone =} \KeywordTok{mean}\NormalTok{(Daily.Max.}\FloatTok{8.}\NormalTok{hour.Ozone.Concentration)}
+\NormalTok{  )}
+\NormalTok{GaringerOzone.monthly}\OperatorTok{$}\NormalTok{PlotDate <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\KeywordTok{paste}\NormalTok{(}
+\NormalTok{  GaringerOzone.monthly}\OperatorTok{$}\NormalTok{Year,}
+\NormalTok{  GaringerOzone.monthly}\OperatorTok{$}\NormalTok{Month,}
+  \DecValTok{1}\NormalTok{, }\DataTypeTok{sep=}\StringTok{"-"}\NormalTok{), }\DataTypeTok{format =} \StringTok{"%Y-%m-%d"}\NormalTok{)}
+
+\CommentTok{# 10}
+\NormalTok{GaringerOzone.monthly.ts <-}\StringTok{ }\KeywordTok{ts}\NormalTok{(GaringerOzone.monthly}\OperatorTok{$}\NormalTok{monthly.mean.max8hr.ozone,}
+                               \DataTypeTok{frequency =} \DecValTok{12}\NormalTok{,}
+                               \DataTypeTok{start =} \KeywordTok{c}\NormalTok{(}\DecValTok{2010}\NormalTok{,}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{),}
+                               \DataTypeTok{end =} \KeywordTok{c}\NormalTok{(}\DecValTok{2019}\NormalTok{,}\DecValTok{12}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+
+\CommentTok{# 11}
+\NormalTok{GaringerOzone.monthly.ts_trend <-}\StringTok{ }\KeywordTok{smk.test}\NormalTok{(GaringerOzone.monthly.ts)}
+\NormalTok{GaringerOzone.monthly.ts_trend }\CommentTok{# there is a significant monotonic trend, p < 0.05}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Seasonal Mann-Kendall trend test (Hirsch-Slack test)
+## 
+## data:  GaringerOzone.monthly.ts
+## z = -1.963, p-value = 0.04965
+## alternative hypothesis: true S is not equal to 0
+## sample estimates:
+##    S varS 
+##  -77 1499
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(GaringerOzone.monthly.ts_trend) }\CommentTok{# trend not significantly different by month}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Seasonal Mann-Kendall trend test (Hirsch-Slack test)
+## 
+## data: GaringerOzone.monthly.ts
+## alternative hypothesis: two.sided
+## 
+## Statistics for individual seasons
+## 
+## H0
+##                      S varS    tau      z Pr(>|z|)  
+## Season 1:   S = 0   15  125  0.333  1.252  0.21050  
+## Season 2:   S = 0   -1  125 -0.022  0.000  1.00000  
+## Season 3:   S = 0   -4  124 -0.090 -0.269  0.78762  
+## Season 4:   S = 0  -17  125 -0.378 -1.431  0.15241  
+## Season 5:   S = 0  -15  125 -0.333 -1.252  0.21050  
+## Season 6:   S = 0  -17  125 -0.378 -1.431  0.15241  
+## Season 7:   S = 0  -11  125 -0.244 -0.894  0.37109  
+## Season 8:   S = 0   -7  125 -0.156 -0.537  0.59151  
+## Season 9:   S = 0   -5  125 -0.111 -0.358  0.72051  
+## Season 10:   S = 0 -13  125 -0.289 -1.073  0.28313  
+## Season 11:   S = 0 -13  125 -0.289 -1.073  0.28313  
+## Season 12:   S = 0  11  125  0.244  0.894  0.37109  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 12}
+\KeywordTok{sea.sens.slope}\NormalTok{(GaringerOzone.monthly.ts) }\CommentTok{# is this per month??}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.0002044163
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sea.sens.slope}\NormalTok{(GaringerOzone.monthly.ts)}\OperatorTok{*}\DecValTok{12}  \CommentTok{# yearly decrease I think}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -0.002452995
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# 13}
+\KeywordTok{ggplot}\NormalTok{(GaringerOzone.monthly, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{as.Date}\NormalTok{(PlotDate), }\DataTypeTok{y =}\NormalTok{ monthly.mean.max8hr.ozone))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightgray"}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(}\DataTypeTok{color =} \StringTok{"cadetblue"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x=} \StringTok{""}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Ozone Daily 8 hr Max (ppm)"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_x_date}\NormalTok{(}\DataTypeTok{breaks =} \StringTok{"year"}\NormalTok{, }\DataTypeTok{labels =} \KeywordTok{date_format}\NormalTok{(}\StringTok{"%Y"}\NormalTok{), }
+               \DataTypeTok{minor_breaks =} \StringTok{"year"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{A08_TimeSeries_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{13}
+\tightlist
+\item
+  To accompany your graph, summarize your results in context of the
+  research question. Include output from the statistical test in
+  parentheses at the end of your sentence. Feel free to use multiple
+  sentences in your interpretation.
+\end{enumerate}
+
+\begin{quote}
+Answer: Mean 8 hour maximum ozone concentrations at Garinger have
+decreased significantly from 2010 to 2019 by 0.00245 ppm per year
+(Seasonal Mann-Kendall, Z = -1.963, p \textless0.05; Sen's Slope, slope
+= -0.000204 ppm/month). Trend was not found to differ significantly by
+month.
+\end{quote}
+
+\end{document}

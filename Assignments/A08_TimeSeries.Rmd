@@ -63,24 +63,24 @@ GaringerOzone <- sapply(ozone.files, read.csv, simplify=FALSE) %>%
 # see above, found more efficient way to do this
 
 # 3
-GaringerOzone$Date <- as.Date(GaringerOzone$Date, format = "%m/%d/%Y")
+GaringerOzone$Date <- as.Date(x=GaringerOzone$Date, format = "%m/%d/%Y")
 
 
 # 4
 GaringerOzone <- select(GaringerOzone, c(Date, Daily.Max.8.hour.Ozone.Concentration, DAILY_AQI_VALUE))
 summary(GaringerOzone$DAILY_AQI_VALUE)
 # 5
-Days <- as.data.frame(seq(as.Date("2010-01-01"),as.Date("2019-12-12"), "day")) # changed end date by 1 to avoid error later down
+Days <- as.data.frame(seq(as.Date("2010-01-01"),as.Date("2019-12-31"), "day")) 
 colnames(Days)
 Days <- Days %>%
-  rename(Date = 'seq(as.Date(\"2010-01-01\"), as.Date(\"2019-12-12\"), \"day\")') # changed end date by 1 to avoid error later down
+  rename(Date = 'seq(as.Date(\"2010-01-01\"), as.Date(\"2019-12-31\"), \"day\")') 
 class(Days$Date)
-#Days$Date <- as.Date(Days$Date, format = "%Y-%m-%d")
+
 
 # 6
 GaringerOzone <- left_join(Days,GaringerOzone, by = "Date")
 
-dim(GaringerOzone) # still not the right number of rows...
+dim(GaringerOzone) # hooray!
 ```
 
 ## Visualize
@@ -118,7 +118,7 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 ```{r}
 # 8
 GaringerOzone$Daily.Max.8.hour.Ozone.Concentration <- na.approx(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
-# possibly error because the last date is NA so there is no way to interpolate that point? error removed by eliminating the last day (Dec 13)
+
 
 summary(GaringerOzone$Daily.Max.8.hour.Ozone.Concentration)
 # 9
@@ -148,7 +148,7 @@ summary(GaringerOzone.monthly.ts_trend) # trend not significantly different by m
 
 # 12
 sea.sens.slope(GaringerOzone.monthly.ts) # is this per month??
-sea.sens.slope(GaringerOzone.monthly.ts)*12  # yearly decrease??
+sea.sens.slope(GaringerOzone.monthly.ts)*12  # yearly decrease I think
 
 # 13
 ggplot(GaringerOzone.monthly, aes(x=as.Date(PlotDate), y = monthly.mean.max8hr.ozone))+
