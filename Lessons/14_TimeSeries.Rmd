@@ -190,11 +190,11 @@ In general, detecting a monotonic trend requires a long sequence of data with fe
 
 Adjusting the data may be necessary to fulfill the assumptions of a trend test. These adjustments include **aggregation**, **subsampling**, and **interpolation**. What do each of these mean, and why might we want to use them?
 
-> aggregation: collect or summarize data to get weekly or monthly data, or data for certain lakes/rivers/ etc
+> aggregation: collect or summarize a group of data to consolidate into one data point. eg use daily or weekly data and aggregate to get monthly data
 
-> subsampling: 
+> subsampling: use only a selection of points from a group as a representative sample of the whole dataset
 
-> interpolation: 
+> interpolation: fill in gaps in data with an estimation based on the points around it
 
 Common interpolation methods: 
 
@@ -220,7 +220,7 @@ ggplot(NCAir, aes(x = Date, y = PM2.5)) +
   facet_wrap(vars(Site.Name))
 print(NCPM2.5)
 
-summary(NCAir$Site.Name)
+summary(NCAir$Site.Name) # full datasets should have 730 entries
 
 NCAir.Garinger <- NCAir %>%
   filter(Site.Name == "Garinger High School")
@@ -230,11 +230,12 @@ ggplot(NCAir.Garinger, aes(x = Date, y = Ozone)) +
   geom_point() 
 print(GaringerOzone)
 
-# na.approx function fills in NAs with a linear interpolation
+# na.approx function fills in NAs with a linear interpolation, depends on what orders the rows are in, so make sure that if you want it done in order of day, that the rows are sorted/arranged by day 
+
 # Spline interpolation can also be specified as an alternative
-# Piecewise constant interpolation can be done with na.aggregate
-NCAir.Garinger$Ozone <- na.approx(NCAir.Garinger$Ozone)
-NCAir.Garinger$PM2.5 <- na.approx(NCAir.Garinger$PM2.5)
+# Piecewise/nearest neighbor constant interpolation can be done with *na.aggregate()*
+NCAir.Garinger$Ozone <- na.approx(NCAir.Garinger$Ozone) # default is linear, can also specify a spline function
+NCAir.Garinger$PM2.5 <- na.approx(NCAir.Garinger$PM2.5) 
 
 GaringerOzone.interpolated <-
 ggplot(NCAir.Garinger, aes(x = Date, y = Ozone)) +
@@ -269,21 +270,22 @@ EnoDischarge.late.monthly <- EnoDischarge.late %>%
          Month = month(datetime)) %>%
   group_by(Year, Month) %>%
   summarise(Discharge = mean(discharge.mean)) 
-  
+ 
+# this creates a "fake" Date column that pretends that each monthly mean occurs on the 1st of teh month - code below tells it to populate the date column with the year-month-and day 1, separated by a hyphen
 EnoDischarge.late.monthly$Date <- as.Date(paste(EnoDischarge.late.monthly$Year, 
                                                 EnoDischarge.late.monthly$Month, 
                                                 1, sep="-"), 
                                           format = "%Y-%m-%d")
 
-# Generate time series (smk.test needs ts, not data.frame)
+# Generate time series (smk.test needs ts, not data.frame) - freq 12 is for the 12 month cycle 
 EnoDischarge.late.monthly.ts <- ts(EnoDischarge.late.monthly$Discharge, frequency = 12, 
                         start = c(1985, 10, 1), end = c(2019, 12, 1))
 # Run SMK test
 EnoDischarge.late.trend <- smk.test(EnoDischarge.late.monthly.ts)
 
 # Inspect results
-EnoDischarge.late.trend
-summary(EnoDischarge.late.trend)
+EnoDischarge.late.trend # is there a significant monotonic trend overall? no, p = .889
+summary(EnoDischarge.late.trend) # is there a signif seasonal trend? no
 
 EnoDischarge.monthly <-
 ggplot(EnoDischarge.late.monthly, aes(x = Date, y = Discharge)) +
@@ -294,13 +296,13 @@ print(EnoDischarge.monthly)
 
 What would we conclude based on these findings? 
 
->
+> There is no significant increase or decrease in mean flow discharge over the study period from 1985 to 2019 and there was also not singificant monthly seasonal trend during this time period (Seasonal Mann-Kendall test; Z = -0.14, p = 0.89). 
  
 If a significant trend was present, we could compute a **Sen's Slope** to quantify that trend (`sens.slope` function in the trend package).
+- can interpret slope but can be difficult to graph it
 
 
-
-## Forecasting with Autoregressive and Moving Average Models (ARMA)
+## Forecasting with Autoregressive and Moving Average Models (ARMA/AREMA)
 
 We might be interested in characterizing a time series in order to understand what happened in the past and to effectively forecast into the future. Two common models that can approximate time series are **autoregressive** and **moving average** models. To classify these models, we use the  **ACF (autocorrelation function)** and the **PACF (partial autocorrelation function)**, which correspond to the autocorrelation of a series and the correlation of the residuals, respectively. 
 
@@ -312,7 +314,7 @@ Here are some great resources for examining ACF and PACF lags under different fo
 https://nwfsc-timeseries.github.io/atsa-labs/sec-tslab-autoregressive-ar-models.html
 https://nwfsc-timeseries.github.io/atsa-labs/sec-tslab-moving-average-ma-models.html
 
-ARMA models require stationary data. This means that there is no monotonic trend over time and there is also equal variance and covariance across the time series. The function `adf.test` will determine whether our data are stationary. The null hypothesis is that the data are not stationary, so we infer that the data are stationary if the p-value is < 0.05.
+ARMA models require stationary data. This means that there is no monotonic trend over time and there is also equal variance and covariance across the time series. The function `adf.test` will determine whether our data are stationary. The null hypothesis is that the data are not stationary, so we infer that the data are stationary if the p-value is < 0.05. If you do have a significant trend in your data, you can remove the idententified trend and run ARMA on the de-trended data.
 
 While some processes might be easy to identify, it is often complicated to predict the order of AR and MA processes when the operate in the same dataset. To get around this issue, it is often necessary to run multiple potential formulations of the model and see which one results in the most parsimonious fit using AIC. The function `auto.arima` does this automatically.
 
