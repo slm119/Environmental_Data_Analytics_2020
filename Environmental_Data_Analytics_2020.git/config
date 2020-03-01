@@ -1,0 +1,10 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = https://github.com/slm119/Environmental_Data_Analytics_2020
+	fetch = +refs/*:refs/*
+	mirror = true
