@@ -275,7 +275,6 @@ The completed exercise is due on Tuesday, March 3 at 1:00 pm.
 \CommentTok{# see above, found more efficient way to do this}
 
 \CommentTok{# 3}
-\CommentTok{# for some reason this line is causing a knit error??}
 \NormalTok{GaringerOzone}\OperatorTok{$}\NormalTok{Date <-}\StringTok{ }\KeywordTok{as.Date}\NormalTok{(}\DataTypeTok{x=}\NormalTok{GaringerOzone}\OperatorTok{$}\NormalTok{Date, }\DataTypeTok{format =} \StringTok{"%m/%d/%Y"}\NormalTok{)}
 
 
@@ -377,13 +376,14 @@ autocorrelation and so the missing value on one day is likely to be
 related to the values the day before or the day after - a linear
 interpolation is therefore a better option than a piecewise constant
 interpolation which would simply assign the same value as the closest
-day which would be a less accurate estimate than linear interpolation. A
-spline approach could also have been used in this case if we were
-concerned that that high variability (lots of high highs or low lows)
-could lead to unrealistic interpolated values if using a linear
-approach. A higher order spline interpolation could help prevent
-unusually high or low values from affecting interpolated values as
-much.In this case, a simpler linear (0 order) approach does the job.
+day which would be a less accurate estimate than linear interpolation.
+Also, we ar mostly trying to fill in small NA gaps where only a day or
+two are missing in a row. A spline approach could also have been used in
+this case if we were concerned that that high variability (lots of high
+highs or low lows) could lead to unrealistic interpolated values if
+using a linear approach. A higher order spline interpolation could help
+prevent unusually high or low values from affecting interpolated values
+as much. In this case, a simpler linear (0 order) approach does the job.
 \end{quote}
 
 \begin{enumerate}
@@ -407,8 +407,8 @@ much.In this case, a simpler linear (0 order) approach does the job.
 \begin{quote}
 Answer: The plot we created in part 7 shows that there seems to be a
 seasonal pattern in the data, and so a seasonal Mann-Kendall should be
-used. Also, Mann Kendall is a non-paramentric test and so there is no
-assumption that our data follows a normal distribution.
+used. Also, Mann Kendall is a non-paramentric test and so our data does
+not have to follow a normal distribution.
 \end{quote}
 
 \begin{enumerate}
@@ -525,16 +525,6 @@ assumption that our data follows a normal distribution.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\KeywordTok{sea.sens.slope}\NormalTok{(GaringerOzone.monthly.ts)}\OperatorTok{*}\DecValTok{12}  \CommentTok{# yearly decrease I think}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] -0.002452995
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \CommentTok{# 13}
 \KeywordTok{ggplot}\NormalTok{(GaringerOzone.monthly, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\KeywordTok{as.Date}\NormalTok{(PlotDate), }\DataTypeTok{y =}\NormalTok{ monthly.mean.max8hr.ozone))}\OperatorTok{+}
 \StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\DataTypeTok{color =} \StringTok{"lightgray"}\NormalTok{, }\DataTypeTok{alpha =} \FloatTok{0.5}\NormalTok{)}\OperatorTok{+}
@@ -560,10 +550,9 @@ assumption that our data follows a normal distribution.
 
 \begin{quote}
 Answer: Mean 8 hour maximum ozone concentrations at Garinger have
-decreased significantly from 2010 to 2019 by 0.00245 ppm per year
-(Seasonal Mann-Kendall, Z = -1.963, p \textless0.05; Sen's Slope, slope
-= -0.000204 ppm/month). Trend was not found to differ significantly by
-month.
+decreased significantly from 2010 to 2019 by and estimated 0.000204 ppm
+(Seasonal Mann-Kendall, Z = -1.963, p \textless0.05; Sen's Slope =
+-0.000204 ppm). Trend was not found to differ significantly by month.
 \end{quote}
 
 \end{document}

@@ -101,7 +101,7 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 8. Use a linear interpolation to fill in missing daily data for ozone concentration. Why didn't we use a piecewise constant or spline interpolation?
 
-> Answer: Ozone concentrations are likely to have some temporal autocorrelation and so the missing value on one day is likely to be related to the values the day before or the day after - a linear interpolation is therefore a better option than a piecewise constant interpolation which would simply assign the same value as the closest day which would be a less accurate estimate than linear interpolation. A spline approach could also have been used in this case if we were concerned that that high variability (lots of high highs or low lows) could lead to unrealistic interpolated values if using a linear approach. A higher order spline interpolation could help prevent unusually high or low values from affecting interpolated values as much.In this case, a simpler linear (0 order) approach does the job.
+> Answer: Ozone concentrations are likely to have some temporal autocorrelation and so the missing value on one day is likely to be related to the values the day before or the day after - a linear interpolation is therefore a better option than a piecewise constant interpolation which would simply assign the same value as the closest day which would be a less accurate estimate than linear interpolation. Also, we ar mostly trying to fill in small NA gaps where only a day or two are missing in a row. A spline approach could also have been used in this case if we were concerned that that high variability (lots of high highs or low lows) could lead to unrealistic interpolated values if using a linear approach. A higher order spline interpolation could help prevent unusually high or low values from affecting interpolated values as much. In this case, a simpler linear (0 order) approach does the job.
 
 9. Create a new data frame called GaringerOzone.monthly that contains aggregated data: mean ozone concentrations for each month. In your pipe, you will need to first add columns for year and month to form the groupings. In a separate line of code, create a new Date column with each month-year combination being set as the first day of the month (this is for graphing purposes only)
 
@@ -109,7 +109,7 @@ Study question: Have ozone concentrations changed over the 2010s at this station
 
 11. Run a time series analysis. In this case the seasonal Mann-Kendall is most appropriate; why is this?
 
-> Answer: The plot we created in part 7 shows that there seems to be a seasonal pattern in the data, and so a seasonal Mann-Kendall should be used. Also, Mann Kendall is a non-paramentric test and so there is no assumption that our data follows a normal distribution. 
+> Answer: The plot we created in part 7 shows that there seems to be a seasonal pattern in the data, and so a seasonal Mann-Kendall should be used. Also, Mann Kendall is a non-paramentric test and so our data does not have to follow a normal distribution. 
 
 12. To figure out the slope of the trend, run the function `sea.sens.slope` on the time series dataset. 
 
@@ -148,7 +148,7 @@ summary(GaringerOzone.monthly.ts_trend) # trend not significantly different by m
 
 # 12
 sea.sens.slope(GaringerOzone.monthly.ts) # is this per month??
-sea.sens.slope(GaringerOzone.monthly.ts)*12  # yearly decrease I think
+
 
 # 13
 ggplot(GaringerOzone.monthly, aes(x=as.Date(PlotDate), y = monthly.mean.max8hr.ozone))+
@@ -162,4 +162,4 @@ ggplot(GaringerOzone.monthly, aes(x=as.Date(PlotDate), y = monthly.mean.max8hr.o
 
 14. To accompany your graph, summarize your results in context of the research question. Include output from the statistical test in parentheses at the end of your sentence. Feel free to use multiple sentences in your interpretation.
 
-> Answer: Mean 8 hour maximum ozone concentrations at Garinger have decreased significantly from 2010 to 2019 by 0.00245 ppm per year (Seasonal Mann-Kendall, Z = -1.963, p <0.05; Sen's Slope, slope = -0.000204 ppm/month). Trend was not found to differ significantly by month. 
+> Answer: Mean 8 hour maximum ozone concentrations at Garinger have decreased significantly from 2010 to 2019 by and estimated 0.000204 ppm (Seasonal Mann-Kendall, Z = -1.963, p <0.05; Sen's Slope = -0.000204 ppm). Trend was not found to differ significantly by month. 

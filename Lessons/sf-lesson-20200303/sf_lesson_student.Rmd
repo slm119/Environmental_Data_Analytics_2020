@@ -119,7 +119,7 @@ What are some example file extensions for vector and raster data (spatial and no
 
 ### 1.6 The Tidyverse and Spatial Data
 
-As of March 2020, there are two major spatial data R packages that interface well with the tidyverse. These are the sf and stars packages. We'll focus primarily on the sf package in this lesson because it works well with the tidyverse. I offer a number of links at the end of this document for you to learn more about other spatial data analysis packages for R.
+As of March 2020, there are two major spatial data R packages that interface well with the tidyverse. These are the *sf* and *stars* packages. We'll focus primarily on the sf package in this lesson because it works well with the tidyverse. I offer a number of links at the end of this document for you to learn more about other spatial data analysis packages for R.
 
 The raster package has *some* ability to interact with tidyverse functions. You can read more about the limited cases [here](https://geocompr.github.io/geocompkg/articles/tidyverse-pitfalls.html).
 
@@ -156,7 +156,7 @@ Sf objects are organized into three main classes, which you can read more about 
 
 Also, sf geometries are organized into three main classes:
 
-1. sf - the data frame that with feature attributes and feature geometries, this contains...
+1. sf - the data frame with feature attributes and feature geometries, this contains...
 2. sfc - the list-column with the geometries for each record, this contains...
 3. sfg - the feature geometry of an individual simple feature
 
@@ -164,7 +164,7 @@ There are a number of different types of "simple features" geometry types repres
 
 ![Table 1. Geometries represented in the sf package. Source: https://r-spatial.github.io/sf/articles/sf1.html](img/sf_geometries.png)
 
-#### 1.6.3 stars
+#### 1.6.3 stars - for raster and vector data
 
 The stars package is used for handling raster and vector data. Its name stands for "spatio-temporal tidy arrays for R". You can read more about stars [here](https://github.com/r-spatial/stars).
 
@@ -252,7 +252,7 @@ National Center for Ecological Analysis and Synthesis created a CRS summary shee
 
 The data we'll use in this lesson comes from the United States Geologic Survey (USGS). Specifically, the dataset is called the Geospatial Attributes of Gages for Evaluating Steamflow, version 2 (GAGES-II) available [here](https://water.usgs.gov/GIS/metadata/usgswrd/XML/gagesII_Sept2011.xml). GAGES-II provides geospatial data and classifications of 9,322 stream gages that are maintained by the USGS. It includes: (1) watershed boundaries by region (spatial data), (2) USGS stream gage locations (spatial data), (3) watershed characteristics (tabular data). Note that the term "watershed" is used interchangeably with the word "basin".
 
-We'll also being using Southeast state boundary data from the United States Census Bureau.
+We'll also being using Southeast state boundary data from the United States Census Bureau. Check out the *maps* packages for state boundaries and other open source spatial data.
 
 Here is what the spatial data for this lesson looks like (Figure 4). Southeast state boundaries are shown in dark green, watershed boundaries are shown in light green, and stream gage locations are shown as grey points.
 
@@ -279,9 +279,9 @@ I like to always save a copy of the raw data in my R session and rename all new 
 
 ```{r activity.load.data}
 # add your code here
-gages_raw <- 
-southeast_state_bounds_raw <- 
-my_tabular_data_raw <- 
+gages_raw <- st_read(here("data", "spatial_data", "gagesII_9322_sept30_2011.shp"))
+southeast_state_bounds_raw <- st_read(here("data", "spatial_data", "southeast_state_bounds.shp"))
+my_tabular_data_raw <- read.csv("./data/tabular_data/conterm_topo.txt")
 
 # red warning text is telling you how the data is being parsed
 ```
@@ -304,8 +304,15 @@ Use base R commands to answer the following questions (for basins_nf_seplains_ra
 ```{r activity.check.out.data}
 
 # add your code here
-
+class(basins_nf_seplains_raw)
+colnames(basins_nf_seplains_raw)
+dim(basins_nf_seplains_raw)
+str(basins_nf_seplains_raw)
+attributes(basins_nf_seplains_raw)
+head(basins_nf_seplains_raw)
 # bonus, add your code here
+
+glimpse(basins_nf_seplains_raw)
 ```
 
 While not in base, you can also use glimpse() from the tibble (tidyverse) package to look at basin_nf_seplains_raw.
@@ -325,7 +332,10 @@ Use st_crs() to look at the CRSs of the spatial data you have loaded up so far. 
 
 ```{r activity.check.out.data.again}
 # add your code here
-
+st_crs(basins_nf_seplains_raw)
+st_crs(gages_raw)
+st_crs(my_tabular_data_raw)
+st_crs(southeast_state_bounds_raw)
 # first two will not have EPSG code but have proj4 string (i.e., "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs")
 
 # last one will have EPSG code 5070 and proj4 string (i.e., "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"), this one looks good!
@@ -337,11 +347,11 @@ Use st_crs() to look at the CRSs of the spatial data you have loaded up so far. 
 
 Now that you've checked the CRSs of your spatial data, you can either set or project them so they are compatible with one another.
 
-When *setting* a CRS, you're labeling the spatial data with a CRS it already has but is not showing up when you load the data into R. Setting also includes defining a missing ESPG or proj4 string; when one is complete but the other is not.
+When *setting* a CRS, you're labeling the spatial data with a CRS it already has but is not showing up when you load the data into R. Setting also includes defining a missing ESPG or proj4 string; when one is complete but the other is not. This is like "define projection" in ArcGIS.
 
-When *projecting* a CRS, you're converting the spatial data from one CRS to another. For the sf package, transform is used interchangeably with project.
+When *projecting* a CRS, you're converting the spatial data from one CRS to another. For the sf package, transform is used interchangeably with project. This is akin to "Project" in ArcGIS.
 
-It's **very** important know the difference between setting and projecting!
+It's **very** important to know the difference between setting and projecting!
 
 Set a CRS by:
 
@@ -369,34 +379,32 @@ Pick one of the three datasets, define a new variable with "na_albers" at the en
 Last, check the CRSs of each.
 
 ```{r activity.setting.projecting}
-# define proj4 string and EPSG code
+# define proj4 string and EPSG code -- not sure I have the correct one? before the proj4 showed up by epsg was NA, is the proj4 and epsg below for albers or for whatever our data is in??
 # add your code here
-my_proj4 <- 
-my_epsg <- 
+my_proj4 <- "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+my_epsg <- 5070
 
 # setting projections
-# set the proj4 string first and then set the EPSG code (because proj4 will over-ride EPSG if you set EPSG first)
-# add your code here
-# basins
-basins_nf_seplains <- basins_nf_seplains_raw
+st_crs(basins_nf_seplains_raw) <- my_proj4
+basins_nf_seplains <- st_set_crs(basins_nf_seplains_raw, my_epsg)
+st_crs(basins_nf_seplains)
 
-# add your code here
-# gages
-gages <- gages_raw
+st_crs(gages_raw) <- my_proj4
+gages <- st_set_crs(gages_raw, my_epsg)
+st_crs(gages)
 
-# state bounds
-# this one looks good so you don't need to do anything but here's the code anyway
-# add your code here
-southeast_state_bounds <- southeast_state_bounds_raw
+st_crs(southeast_state_bounds_raw) <- my_proj4
+southeast_state_bounds <- st_set_crs(southeast_state_bounds_raw, my_epsg)
+st_crs(southeast_state_bounds)
+
 
 # projecting to North America Albers Equal Area Conic
 # add your code here
-na_albers_proj4 <- 
-na_albers_epsg <- 
+na_albers_proj4 <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs"
+na_albers_epsg <- 102008
 # set the proj4 string first and then set the EPSG code (because proj4 will over-ride EPSG if you set EPSG first)
-
-# check CRSs
-# add your code here
+southeast_state_bounds_na_albers <-  sf::st_transform(southeast_state_bounds, crs = na_albers_proj4) %>%
+  st_set_crs(na_albers_epsg)
 ```
 
 ### 2.6 Converting sp Objects to sf Objects and Vice Versa
@@ -527,18 +535,27 @@ Bonus: What are some other spatial operations (or confirmations) that you could 
 ```{r activity.gages.select}
 # select a state, here I'm choosing North Carolina (NC)
 # add your code here
+head(southeast_state_bounds)
+NC_state_bounds <- southeast_state_bounds%>%
+  filter(NAME == "North Carolina")%>%
+  st_geometry() # this drops all attributes from the dataframe and just keeps the geometry information --why? 
 
-# check
-# add your code here
+head(NC_state_bounds)
 
 # select watersheds that intersect with NC bounds
-# add your code here
+NC_watersheds<- basins_nf_seplains%>%
+  st_intersection(NC_state_bounds)%>%
+  st_geometry()
+head(NC_watersheds)
 
-# check
-# add your code here
+# clip water sheds to NC - not working?
+
+  
 
 # select gages that fall within NC bounds
-# add your code here
+NC_gages <- gages %>%
+  st_intersection(NC_state_bounds)%>%
+  st_geometry()
 
 # bonus
 # add your code here
@@ -573,7 +590,7 @@ dev.off()
 # adding fill by a second variable
 pdf(here("outputs", "southeast_state_bounds_by_area.pdf"), width = 11, height = 8.5)
 ggplot(data = southeast_state_bounds) +
-  geom_sf(aes(fill = Shape_Area)) +
+  geom_sf(aes(fill = Shape_Area)) + # fill by attribute
   geom_sf_text(aes(label = NAME), color = "white") +
   theme_bw()
 dev.off()
@@ -586,7 +603,10 @@ Let's check your operations from the 3.1.2 activity. You are trying for somethin
 ```{r activity.checking.operations}
 # plot NC watershed boundardies from 3.1.2
 pdf(here("outputs", "spatial_operations_test_fig.pdf"), width = 11, height = 8.5)
-# add your code here
+ggplot()+
+  geom_sf(data = NC_state_bounds) +
+  geom_sf(data = NC_watersheds, fill = "lightblue", alpha = .5) +
+  geom_sf(data = NC_gages, color = "orange")
 dev.off()
 ```
 
@@ -606,16 +626,16 @@ nc_state_bounds_geom <- southeast_state_bounds %>%
 nc_bbox <- nc_state_bounds_geom %>%
   st_buffer(dist = 150000) %>% # this value is very arbitrary just wanting to make a large buffer around geometry
   st_transform(4326) %>% # WGS84 (for lat and long)
-  st_bbox()
+  st_bbox() # creates a bounding box based on the buffered NC geometry
 nc_bbox # check
 
 # fix bounding box columns so they match what is needed for the ggmap::get_map() function
-nc_bbox_fix <- c(left = nc_bbox[[1]], bottom = nc_bbox[[2]], right = nc_bbox[[3]], top = nc_bbox[[4]])
+nc_bbox_fix <- c(left = nc_bbox[[1]], bottom = nc_bbox[[2]], right = nc_bbox[[3]], top = nc_bbox[[4]]) # brackets specify the position in the list, becuase get_map needs the list labels as left, bottom, right, top
 
 # check result
 nc_bbox_fix
 
-# get basemap
+# get basemap - using get_map
 nc_basemap <- get_map(nc_bbox_fix, maptype = 'terrain-background', source = 'stamen', zoom = 8)
 class(nc_basemap)
 st_crs(nc_basemap)
@@ -638,12 +658,12 @@ dev.off()
 # plot with basemap
 # windows version?
 pdf(here("outputs", "nc_with_basemap.pdf"), width = 11, height = 8.5)
-ggmap(nc_basemap) +
+ggmap(nc_basemap) + # use ggmap(basemap name) and ggplot will know that you are using a basemap
   geom_sf(data = nc_state_bounds_geom_wsg84, fill = NA, lwd = 1, inherit.aes = FALSE)
 dev.off()
 
 # bonus
-# try chaning the zoom on get_map() and see what happens
+# try changing the zoom on get_map() and see what happens
 # look at the help menu for more information on the zoom range
 ```
 
@@ -708,11 +728,13 @@ nc_gages <- gages %>%
 
 # take a look at ng_gages
 head(nc_gages)
-names(nc_gages)
+names(nc_gages) # view column names
 # we see there are some variables we could color by but the tabular data has many more
 
 # take a look at my_tabular_data_raw
 names(my_tabular_data_raw)
+class(my_tabular_data_raw$STAID)
+my_tabular_data_raw$STAID <- as.factor(my_tabular_data_raw$STAID)
 # In this example, we choose the climate data and use the WD_SITE variable. This is the "Site average of annual number of days (days) of measurable precipitation, derived from 30 years of record (1961-1990), 2km PRISM.". This description comes from the gagesII_sept30_2011_var_desc.xlsx file in the tabular data directory.
 
 # check column names of nc_gages to look for joining key
