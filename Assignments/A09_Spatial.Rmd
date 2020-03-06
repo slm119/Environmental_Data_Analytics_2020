@@ -1,6 +1,6 @@
 ---
 title: "Assignment 9: Spatial Analysis"
-author: "Student Name"
+author: "Sena McCrory"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -39,3 +39,72 @@ Here are your three options:
 * Tabular data that correpond to one of the layers, specified as an aesthetic (e.g., total litter biomass at each trap, land cover class at each trap)
 
 Hint: One package that may come in handy here is the `maps` package, which contains several options for basemaps that cover political and geologic boundaries.
+
+
+## Set up
+```{r}
+library(tidyverse)
+library(sf)
+library(maps)
+library(ggmap)
+library(viridis)
+getwd()
+
+# load spatial datasets
+coastlines_global_wgs84 <- st_read("../ENV872_FinalProject/Data/SpatialData/GSHHS_shp/l/GSHHS_l_L1.shp")
+
+
+metals_biota_all <- read.csv("../ENV872_FinalProject/Data/Raw/ContaminantsBiota.csv")
+table(metals_biota_all$PARAM)
+cadmium_biota_wgs84 <- metals_biota_all %>%
+  filter(PARAM == "CD" & MUNIT == "ug/kg") %>%
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326, dim = "XY")
+head(cadmium_biota_wgs84)
+
+ICES_ecoregions_wgs84 <- st_read("../ENV872_FinalProject/Data/SpatialData/ICES_ecoregions_20171207_erase_ESRI.shp")
+
+
+#check crs - 
+st_crs(coastlines_global_wgs84) <- 4326
+st_crs(cadmium_biota_wgs84) <- 4326
+st_crs(ICES_ecoregions_wgs84) <- 4326
+
+# create bbox based on cadmium sampling points
+my_bbox <- cadmium_biota_wgs84 %>%
+  st_buffer(dist = 3)%>%
+  st_bbox()
+my_bbox
+
+my_bbox_ggmap <- c(left = my_bbox[[1]], bottom = my_bbox[[2]], right = my_bbox[[3]], top = my_bbox[[4]])
+
+# create an ocean basemap - looks like ggmap doesn't work for far north coords, cannot reproject :( booooo
+
+#ocean_basemap <- get_map(my_bbox_ggmap, maptype = "watercolor", source = 'stamen', zoom = 3)
+#ocean_basemap <- st_transform(ocean_basemap, crs = 4326)
+
+```
+
+
+## create a map
+
+```{r}
+
+pdf("./Assignments/McCrory_A09_Spatial.pdf", width = 11, height = 8.5)
+ggplot()+
+  geom_sf(data = coastlines_global_wgs84, fill = NA, lwd = 1, inherit.aes = FALSE)+
+  geom_sf(data = ICES_ecoregions_wgs84, alpha = 0.5, inherit.aes = F)+
+  geom_sf_text(aes(label = Ecoregion), data = ICES_ecoregions_wgs84)+
+  geom_sf(aes(color = log(Value)), data = cadmium_biota_wgs84, inherit.aes = F, shape = 18, size = .5, alpha = 0.5)+ # want to color or scale by value
+  scale_color_viridis(option = "magma") + # not doing anything...
+  coord_sf(xlim=c(-73.7, 51.2), ylim = c(33.6, 82.0), crs = 4326)+
+  theme_minimal()
+dev.off()
+
+summary(ICES_ecoregions_wgs84$Ecoregion)
+
+#class(cadmium_biota_wgs84$Value)
+ggplot(cadmium_biota_wgs84)+
+  geom_histogram(aes(x=Value))
+
+```
+
