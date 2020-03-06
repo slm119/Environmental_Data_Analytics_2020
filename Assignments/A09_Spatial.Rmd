@@ -92,9 +92,10 @@ my_bbox_ggmap <- c(left = my_bbox[[1]], bottom = my_bbox[[2]], right = my_bbox[[
 pdf("./Assignments/McCrory_A09_Spatial.pdf", width = 11, height = 8.5)
 ggplot()+
   geom_sf(data = coastlines_global_wgs84, fill = NA, lwd = 1, inherit.aes = FALSE)+
-  geom_sf(data = ICES_ecoregions_wgs84, alpha = 0.5, inherit.aes = F)+
-  geom_sf_text(aes(label = Ecoregion), data = ICES_ecoregions_wgs84)+
+  geom_sf(data = ICES_ecoregions_wgs84, alpha = 0.5, inherit.aes = F)+ # how to add two color specifications?
   geom_sf(aes(color = log(Value)), data = cadmium_biota_wgs84, inherit.aes = F, shape = 18, size = .5, alpha = 0.5)+ # want to color or scale by value
+  geom_sf_text(aes(label = Ecoregion), data = ICES_ecoregions_wgs84, 
+               alpha = .4)+
   scale_color_viridis(option = "magma") + # not doing anything...
   coord_sf(xlim=c(-73.7, 51.2), ylim = c(33.6, 82.0), crs = 4326)+
   theme_minimal()
