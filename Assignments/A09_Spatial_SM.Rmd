@@ -48,6 +48,7 @@ library(sf)
 library(maps)
 library(ggmap)
 library(viridis)
+library(ggnewscale)
 getwd()
 
 # load spatial datasets
@@ -92,20 +93,21 @@ my_bbox_ggmap <- c(left = my_bbox[[1]], bottom = my_bbox[[2]], right = my_bbox[[
 pdf("./Assignments/McCrory_A09_Spatial.pdf", width = 11, height = 8.5)
 ggplot()+
   geom_sf(data = coastlines_global_wgs84, fill = NA, lwd = 1, inherit.aes = FALSE)+
-  geom_sf(data = ICES_ecoregions_wgs84, alpha = 0.5, inherit.aes = F)+ # how to add two color specifications?
-  geom_sf(aes(color = log(Value)), data = cadmium_biota_wgs84, inherit.aes = F, shape = 18, size = .5, alpha = 0.5)+ # want to color or scale by value
+  geom_sf(data = ICES_ecoregions_wgs84, alpha = 0.5, inherit.aes = F)+ 
   geom_sf_text(aes(label = Ecoregion), data = ICES_ecoregions_wgs84, 
                alpha = .4)+
-  scale_color_viridis(option = "magma") + # not doing anything...
+  geom_sf(aes(color = log(Value), shape = ), data = cadmium_biota_wgs84, inherit.aes = F, shape = 18, size = .5, alpha = 0.5)+ 
+  scale_color_viridis(option = "magma", begin = .2) + 
   coord_sf(xlim=c(-73.7, 51.2), ylim = c(33.6, 82.0), crs = 4326)+
+  labs(color = "Cadmium conc.in biota\nln(ug/kg)")+
   theme_minimal()
 dev.off()
 
-summary(ICES_ecoregions_wgs84$Ecoregion)
+#summary(ICES_ecoregions_wgs84$Ecoregion)
 
 #class(cadmium_biota_wgs84$Value)
-ggplot(cadmium_biota_wgs84)+
-  geom_histogram(aes(x=Value))
+#ggplot(cadmium_biota_wgs84)+
+#  geom_histogram(aes(x=Value))
 
 ```
 
