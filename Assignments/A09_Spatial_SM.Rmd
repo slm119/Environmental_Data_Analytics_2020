@@ -49,6 +49,7 @@ library(maps)
 library(ggmap)
 library(viridis)
 library(ggnewscale)
+library(scales)
 getwd()
 
 # load spatial datasets
@@ -82,6 +83,9 @@ my_bbox_ggmap <- c(left = my_bbox[[1]], bottom = my_bbox[[2]], right = my_bbox[[
 
 #ocean_basemap <- get_map(my_bbox_ggmap, maptype = "watercolor", source = 'stamen', zoom = 3)
 #ocean_basemap <- st_transform(ocean_basemap, crs = 4326)
+ggplot(cadmium_biota_wgs84)+
+  geom_histogram(aes(x=Value))
+summary(cadmium_biota_wgs84$Value)
 
 ```
 
@@ -96,10 +100,10 @@ ggplot()+
   geom_sf(data = ICES_ecoregions_wgs84, alpha = 0.5, inherit.aes = F)+ 
   geom_sf_text(aes(label = Ecoregion), data = ICES_ecoregions_wgs84, 
                alpha = .4)+
-  geom_sf(aes(color = log(Value), shape = ), data = cadmium_biota_wgs84, inherit.aes = F, shape = 18, size = .5, alpha = 0.5)+ 
-  scale_color_viridis(option = "magma", begin = .2) + 
+  geom_sf(aes(color = Value), data = cadmium_biota_wgs84, inherit.aes = F, shape = 18, size = .5, alpha = 0.5)+ 
+  scale_color_viridis(option = "magma", begin = .2, limits = c(0,1000), oob = scales:: squish) + 
   coord_sf(xlim=c(-73.7, 51.2), ylim = c(33.6, 82.0), crs = 4326)+
-  labs(color = "Cadmium conc.in biota\nln(ug/kg)")+
+  labs(color = expression(paste("Cd conc in biota (", mu, "g/kg)")))+
   theme_minimal()
 dev.off()
 
