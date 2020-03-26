@@ -21,6 +21,7 @@ library(viridis)
 library(rvest)
 #install.packages("ggrepel")
 library(ggrepel)
+library(stringr)
 
 # Set theme
 mytheme <- theme_classic() +
@@ -76,18 +77,30 @@ Now that R knows which website we want to access, we need to tell it what conten
 6. Copy the text that appears in the window at the bottom of the screen and insert it in the following lines of code.
 ```{r}
 # Grab specific components of the website
-State <- webpage %>% html_nodes("table:nth-child(20) td:nth-child(1)") %>% html_text()
-Estuaries.Assessed.mi2 <- webpage %>% html_nodes("table:nth-child(20) td:nth-child(2)") %>% html_text()
-Estuaries.Assessed.percent <- webpage %>% html_nodes("table:nth-child(20) td:nth-child(3)") %>% html_text()
-Estuaries.Impaired.mi2 <- webpage %>% html_nodes("table:nth-child(20) td:nth-child(4)") %>% html_text()
-Estuaries.Impaired.percent <- webpage %>% html_nodes("table:nth-child(20) td:nth-child(5)") %>% html_text()
-Estuaries.Impaired.percent.TMDL <- webpage %>% html_nodes("table:nth-child(20) td:nth-child(6)") %>% html_text()
+State <- webpage %>% # go to this webpage
+  html_nodes("table:nth-child(20) td:nth-child(1)") %>% # find these node selected using selector gadget
+  html_text() # get the html text from those rows
+Estuaries.Assessed.mi2 <- webpage %>% 
+  html_nodes("table:nth-child(20) td:nth-child(2)") %>% 
+  html_text()
+Estuaries.Assessed.percent <- webpage %>% 
+  html_nodes("table:nth-child(20) td:nth-child(3)") %>% 
+  html_text()
+Estuaries.Impaired.mi2 <- webpage %>% 
+  html_nodes("table:nth-child(20) td:nth-child(4)") %>% 
+  html_text()
+Estuaries.Impaired.percent <- webpage %>% 
+  html_nodes("table:nth-child(20) td:nth-child(5)") %>% 
+  html_text()
+Estuaries.Impaired.percent.TMDL <- webpage %>% 
+  html_nodes("table:nth-child(20) td:nth-child(6)") %>% 
+  html_text()
 
 # Note: each of these objects has 23 items in it; consistency is good!
 # If lengths were not consistent you could use matrix subsetting to make consistent
 
 # Each of these objects is just a value, so we need to convert to a data frame
-# Coerce into a data frame
+# Coerce into a data frame - list all of them together, will squish them together as one data frame
 Estuary <- data.frame(State, Estuaries.Assessed.mi2, Estuaries.Assessed.percent, 
                           Estuaries.Impaired.mi2, Estuaries.Impaired.percent, 
                           Estuaries.Impaired.percent.TMDL)
@@ -100,15 +113,11 @@ Notice there are some instances where symbols appear in cells where there should
 Estuary <- Estuary %>%
   filter(State != "Mississippi" & State != "Oregon" & State != "Washington")
 
-# Use str_replace to remove non-numeric characters
-Estuary$Estuaries.Assessed.mi2 <- str_replace(Estuary$Estuaries.Assessed.mi2,
-                                                      pattern = "([,])", replacement = "")  
-Estuary$Estuaries.Assessed.percent <- str_replace(Estuary$Estuaries.Assessed.percent,
-                                                      pattern = "([%])", replacement = "")
-Estuary$Estuaries.Assessed.percent <- str_replace(Estuary$Estuaries.Assessed.percent,
-                                                      pattern = "([*])", replacement = "")
-Estuary$Estuaries.Impaired.mi2 <- str_replace(Estuary$Estuaries.Impaired.mi2,
-                                                      pattern = "([,])", replacement = "")  
+# Use *str_replace* to remove non-numeric characters - must be done for individual columns
+Estuary$Estuaries.Assessed.mi2 <- str_replace(Estuary$Estuaries.Assessed.mi2,                                                    pattern = "([,])", replacement = "")  
+Estuary$Estuaries.Assessed.percent <- str_replace(Estuary$Estuaries.Assessed.percent,pattern = "([%])", replacement = "")
+Estuary$Estuaries.Assessed.percent <- str_replace(Estuary$Estuaries.Assessed.percent, pattern = "([*])", replacement = "")
+Estuary$Estuaries.Impaired.mi2 <- str_replace(Estuary$Estuaries.Impaired.mi2,pattern = "([,])", replacement = "")  
 Estuary$Estuaries.Impaired.percent <- str_replace(Estuary$Estuaries.Impaired.percent, 
                                                   pattern = "([%])", replacement = "")
 Estuary$Estuaries.Impaired.percent.TMDL <- str_replace(Estuary$Estuaries.Impaired.percent.TMDL, 
@@ -131,44 +140,42 @@ str(Estuary)
 
 What is the relationship between estuary assessment and estuary impairment across the coastal states? 
 
->
+> the more area is assessed the more they find that is impaired, the more you look the more you find
 
 I've added some code to adjust the default settings in ggplot. Uncomment lines to see what changes. Add your own comments as you work through the code, particularly for functions you haven't encountered before. 
 
 Note: the fill aesthetic shows up gray for some states. Why?
 
-> 
+> no data for % impaired
 
 ```{r}
 
 ggplot(Estuary, aes(x = Estuaries.Assessed.percent, y = Estuaries.Impaired.percent, 
                     fill = Estuaries.Impaired.percent.TMDL)) +
   #
-  geom_point(shape = 21, size = 2, alpha = 0.8) 
-  #+ 
+  geom_point(shape = 21, size = 2, alpha = 0.8) + 
   #
-  #scale_fill_viridis_c(option = "inferno", begin = 0.2, end = 0.9, direction = -1) +
+  scale_fill_viridis_c(option = "inferno", begin = 0.2, end = 0.9, direction = -1) +
   # 
-  #geom_label_repel(aes(label = State), nudge_x = -5, nudge_y = -5, 
-  #                 size = 3, alpha = 0.8) +  
+  geom_label_repel(aes(label = State), nudge_x = -5, nudge_y = -5, 
+                   size = 3, alpha = 0.8) +  
   #
-  # labs(x = "% Estuaries Assessed (%)",
-  #      y = "% Estuaries Impaired (%)", 
-  #      fill = "% Impaired with TMDL")  
+  labs(x = "% Estuaries Assessed (%)",
+        y = "% Estuaries Impaired (%)", 
+        fill = "% Impaired with TMDL")  
 
 ggplot(Estuary, aes(x = Estuaries.Assessed.mi2, y = Estuaries.Impaired.mi2, 
                     fill = Estuaries.Impaired.percent.TMDL)) +
-  geom_point(shape = 21, size = 2, alpha = 0.8) 
-  #+ 
+  geom_point(shape = 21, size = 2, alpha = 0.8) + 
   #
-  # scale_fill_viridis_c(option = "inferno", begin = 0.2, end = 0.9, direction = -1) +
+  scale_fill_viridis_c(option = "inferno", begin = 0.2, end = 0.9, direction = -1) +
   #
-  # geom_label_repel(data = subset(Estuary, State %in% c("Virginia", "Florida", "Louisiana", "Texas")), 
-  #            aes(label = State), nudge_x = -500, nudge_y = 200) +
+  geom_label_repel(data = subset(Estuary, State %in% c("Virginia", "Florida", "Louisiana", "Texas")), 
+              aes(label = State), nudge_x = -500, nudge_y = 200) +
   #
-  # labs(x = expression("Estuary Area Assessed (mi"^"2"*")"),
-  #      y = expression("Estuary Area Impaired (mi"^"2"*")"), 
-  #      fill = "% Impaired with TMDL")
+  labs(x = expression("Estuary Area Assessed (mi"^"2"*")"),
+        y = expression("Estuary Area Impaired (mi"^"2"*")"), 
+        fill = "% Impaired with TMDL")
 
 
 ```
