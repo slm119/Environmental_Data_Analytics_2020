@@ -8,14 +8,18 @@
 ## Summary
 
 <describe the purpose of this repository, the information it contains, and any relevant analysis goals. What, why, where, when, how?>
+This repository holds the data and analysis for investigating heavy metal concentrations in marine organisms from **year* to *year* within the *region*. Data was downloaded from the *name* ICES marine data portal on *date*. Statistical analyses were conducted to determine whether concentrations of several heavy metals in marine organisms were increasing or decreasing over the study period. 
 
 ## Investigators
 
-<name(s), affiliation(s), contact information, roles (if applicable)>
+Data and anlaysis were prepared by Sena McCrory, a masters student at the Nicholas School of the Environment, Duke University. 
+email: sena.mccrory@duke.edu
+
 
 ## Keywords
 
 <add relevant keywords here>
+ICES, marine contaminants, heavy metals, cadmium *others*
 
 ## Database Information
 
