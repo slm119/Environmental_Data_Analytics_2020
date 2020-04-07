@@ -1,4 +1,9 @@
-
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+i
 ---
 title: "17: Crafting Reports"
 author: "Environmental Data Analytics | Kateri Salk"
@@ -25,28 +30,61 @@ editor_options:
     + Chunk options allow for flexibility when the code runs and when the document is knitted
 3. **Text** with formatting options for readability in knitted document
 
+
 A handy cheat sheet for R markdown can be found [here](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf). Another one can be found [here](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
 
 ## WHY R MARKDOWN?
 
 <Fill in our discussion below with bullet points. Use italics and bold for emphasis (hint: use the cheat sheets to figure out how to make bold and italic text).>
+* *italic*
+* **bold**
+
 
 ## TEXT EDITING CHALLENGE
 
 Create a table below that details the example datasets we have been using in class. The first column should contain the names of the datasets and the second column should include some relevant information about the datasets. (Hint: use the cheat sheets to figure out how to make a table in Rmd)
 
+Name of Dataset | Details
+----------------|----------------------
+NTL-LTER        |
+EPA Ozone data  |
+USGS river flow |
 
 ## R CHUNK EDITING CHALLENGE
 ### Installing packages
 Create an R chunk below that installs the package `knitr`. Instead of commenting out the code, customize the chunk options such that the code is not evaluated (i.e., not run). 
 
 
+```{r eval = FALSE}
+install.packages("knitr")
+
+```
+
 ### Setup
 Create an R chunk below called "setup" that checks your working directory, loads the packages `tidyverse` and `knitr`, and sets a ggplot theme. Remember that you need to disable R throwing a message, which containts a check mark that cannot be knitted.
 
-Load the NTL-LTER_Lake_Nutrients_Raw dataset, display the head of the dataset, and set the date column to a date format.
+```{r Setup, message=FALSE, warning=FALSE}
+getwd()
+library(tidyverse)
+library(knitr)
+library(viridis)
+theme_set(theme_classic())
+
+```
+
+
+Load the NTL-LTER_Lake_Nutrients_Raw dataset, display the head of the dataset, and set the date column to a date format.  
 
 Customize the chunk options such that the code is run but is not displayed in the final document.
+
+```{r echo=FALSE}
+NTL.LTER.LakeNutrients <- read.csv("./Data/Raw/NTL-LTER_Lake_Nutrients_Raw.csv")
+head(NTL.LTER.LakeNutrients)
+
+NTL.LTER.LakeNutrients$sampledate <- as.Date(NTL.LTER.LakeNutrients$sampledate, format = "%m/%d/%y")
+
+```
+
 
 
 ### Data Exploration, Wrangling, and Visualization
@@ -54,15 +92,56 @@ Create an R chunk below to create a processed dataset do the following operation
 
 * Include all columns except lakeid, depth_id, and comments
 * Include only surface samples (depth = 0 m)
+```{r echo = FALSE}
+NTL.LTER.LakeNutrients <- NTL.LTER.LakeNutrients %>%
+  select(-lakeid, -depth_id, -comments)%>%
+  filter(depth == 0)
+```
 
 
 Create a second R chunk to create a summary dataset with the mean, minimum, maximum, and standard deviation of total nitrogen concentrations for each lake. Create a second summary dataset that is identical except that it evaluates total phosphorus. Customize the chunk options such that the code is run but not displayed in the final document. 
+```{r echo=FALSE, message=FALSE}
+NTL.LTER.totN.summary <- NTL.LTER.LakeNutrients %>%
+  group_by(lakename)%>%
+  na.omit()%>%
+  dplyr :: summarise(totN.mean_ug = mean(tn_ug),
+                     totN.min_ug = min(tn_ug),
+                     totN.max_ug = max(tn_ug),
+                     totN.stdev_ug = sd(tn_ug))
+NTL.LTER.totP.summary <- NTL.LTER.LakeNutrients %>%
+  group_by(lakename)%>%
+  na.omit()%>%
+  dplyr :: summarise(totP.mean_ug = mean(tp_ug),
+                     totP.min_ug = min(tp_ug),
+                     totP.max_ug = max(tp_ug),
+                     totP.stdev_ug = sd(tp_ug))
+```
 
 
 Create a third R chunk that uses the function `kable` in the knitr package to display two tables: one for the summary dataframe for total N and one for the summary dataframe of total P. Use the `caption = " "` code within that function to title your tables. Customize the chunk options such that the final table is displayed but not the code used to generate the table. 
 
+```{r echo=FALSE}
+kable(NTL.LTER.totN.summary, caption = "Summary statitistics for Total Nitrogen by lake")
+kable(NTL.LTER.totP.summary, caption = "Summary statitistics for Total Phosphorus by lake")
+# can specify the colum names in kable using --col.names = c("**fill this in**"),
+```
+
 
 Create a fourth and fifth R chunk that generates two plots (one in each chunk): one for total N over time with different colors for each lake, and one with the same setup but for total P. Decide which geom option will be appropriate for your purpose, and select a color palette that is visually pleasing and accessible. Customize the chunk options such that the final figures are displayed but not the code used to generate the figures. In addition, customize the chunk options such that the figures are aligned on the left side of the page. Lastly, add a fig.cap chunk option to add a caption (title) to your plot that will display underneath the figure.
+```{r echo=FALSE, fig.align='left', fig.cap="Total N concentrations by lake over the study period."}
+ggplot(NTL.LTER.LakeNutrients, aes(x=as.Date(sampledate), y = tn_ug))+
+  geom_line(aes(color = lakename), size = 1)+
+  scale_color_viridis_d(end = .9)+
+  labs(x= "Sample Date", y = "Total N (ug/L)", color = "")+
+  scale_y_continuous(limits = c(0,1600))
+```
+
+```{r echo=FALSE, fig.align='left', fig.cap="Total P concentrations by lake over the study period."}
+ggplot(NTL.LTER.LakeNutrients, aes(x=as.Date(sampledate), y = tp_ug))+
+  geom_line(aes(color = lakename), size = 1)+
+  scale_color_viridis_d(end = .9, option = "magma")+
+  labs(x= "Sample Date", y = "Total P (ug/L)", color = "")
+```
 
 
 ### Other options
