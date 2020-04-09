@@ -8,50 +8,56 @@ library(tidyverse)
 # Specify the date column as a date
 # Remove negative values for depth_id 
 # Include only lakename and sampledate through po4 columns
-nutrient_data <- 
-nutrient_data$sampledate <- as.Date()
-nutrient_data <-  %>%
-   %>%
-  
+nutrient_data <- read_csv("Data/NTL-LTER_Lake_Nutrients_PeterPaul_Processed.csv")
+nutrient_data$sampledate <- as.Date(nutrient_data$sampledate, format = "%Y-%m-%d")
+nutrient_data <-  nutrient_data %>%
+  filter(depth_id > 0) %>%
+  select(lakename, sampledate:po4)
 
 #### Define UI ----
 ui <- fluidPage(theme = shinytheme("yeti"),
   # Choose a title
-  titlePanel(),
+  titlePanel("Nutrients in Peter Lake and Paul Lake"),
   sidebarLayout(
     sidebarPanel(
       
       # Select nutrient to plot
-      selectInput(inputId = ,
-                  label = ,
-                  choices = , 
-                  selected = ),
+      selectInput(inputId = "y",
+                  label = "Nutrient",
+                  choices = c("tn_ug", "tp_ug", "nh34", "no23", "po4"), 
+                  selected = "tp_ug"
+                  ),
       
       # Select depth
-      checkboxGroupInput(inputId = ,
-                         label = ,
-                         choices = ,
-                         selected = ,
+      checkboxGroupInput(inputId = "depth",
+                         label = "Depth (m)",
+                         choices = c("1", "2", "3", "4", "5", "6", "7"),
+                         selected = c("1", "7")
+                         ),
       
       # Select lake
-      checkboxGroupInput(inputId = ,
-                         label = ,
-                         choices = ,
-                         selected = ,
+      checkboxGroupInput(inputId = "lakename",
+                         label = "Lake",
+                         choices = c("Peter Lake", "Paul Lake"),
+                         selected = "Peter Lake"
+                         ),
 
       # Select date range to be plotted
-      sliderInput(inputId = ,
-                  label = ,
-                  min = ,
-                  max = ,
-                  value = ,
+      sliderInput(inputId = "dates",
+                  label = "Date",
+                  min = "1991-05-01",
+                  max = "2016-12-31",
+                  value = c("1995-01-01", "1999-12-31")
+                  ),
+    ),
 
     # Output: Description, lineplot, and reference
     mainPanel(
       # Specify a plot output
-      plotOutput( , brush = brushOpts(id = "scatterplot_brush")), 
+      plotOutput("scatterplot", 
+                 brush = brushOpts(id = "scatterplot_brush")), 
       # Specify a table output
-      tableOutput()
+      tableOutput("table")
     )))
 
 #### Define server  ----

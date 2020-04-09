@@ -3,39 +3,41 @@ library(shiny)
 library(tidyverse)
 
 #### Load data ----
-nutrient_data <- read_csv("Data/NTL-LTER_Lake_Nutrients_PeterPaul_Processed.csv")
+nutrient_data <- read_csv("Data/NTL-LTER_Lake_Nutrients_PeterPaul_Processed.csv") #read_csv not read.csv
 nutrient_data$sampledate <- as.Date(nutrient_data$sampledate, format = "%Y-%m-%d")
 nutrient_data <- nutrient_data %>%
   filter(depth_id > 0) %>%
   select(lakename, sampledate:po4)
 
 #### Define UI ----
-ui <- fluidPage(
-  titlePanel("Nutrients in Peter Lake and Paul Lake"),
-  sidebarLayout(
+ui <- fluidPage(  # fit app to the dimensions of your webpage screen size
+  titlePanel("Nutrients in Peter Lake and Paul Lake"), #title of the webpage
+  sidebarLayout(   # create a sidbar panel within the webpage layout
     sidebarPanel(
       
       # Select nutrient to plot
-      selectInput(inputId = "y", 
+      selectInput(inputId = "y", #create dropdown menu, refer to this later as input$y
                   label = "Nutrient",
                   choices = c("tn_ug", "tp_ug", "nh34", "no23", "po4"), 
-                  selected = "tp_ug"),
+                  selected = "tp_ug"), # specify the default selection
   
-      ),
+      ), # sidebar panel done
 
     # Output
-    mainPanel(
-      plotOutput("scatterplot")
+    mainPanel( # now describe what should be in the main panel
+      plotOutput("scatterplot") # output$scatterplot
     )))
 
 #### Define server  ----
 server <- function(input, output) {
      
     # Create a ggplot object for the type of plot you have defined in the UI  
-       output$scatterplot <- renderPlot({
+       output$scatterplot <- renderPlot({  # create a plot
         ggplot(nutrient_data, 
-               aes_string(x = "sampledate", y = input$y, 
-                          fill = "depth_id", shape = "lakename")) +
+               aes_string(# note "aes_string"
+                 x = "sampledate", # not interactive, so just use name from df
+                 y = input$y, # interactive, so must refer to inputID name
+                 fill = "depth_id", shape = "lakename")) +
           geom_point(alpha = 0.8, size = 2) +
           theme_classic(base_size = 14) +
           scale_shape_manual(values = c(21, 24)) +
