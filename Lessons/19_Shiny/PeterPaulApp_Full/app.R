@@ -26,7 +26,7 @@ ui <- fluidPage(theme = shinytheme("yeti"),
       checkboxGroupInput(inputId = "fill",
                          label = "Depth ID",
                          choices = unique(nutrient_data$depth_id),
-                         selected = c(1, 7)),
+                         selected = c("1", "7")),
       
       # Select lake
       checkboxGroupInput(inputId = "shape",
